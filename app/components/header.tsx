@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Picker } from '@react-native-picker/picker';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 import { Heart, ShoppingCart, User, Menu, Star, Gift, Truck } from 'lucide-react-native';
 import { View, Text, Image, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 
@@ -22,7 +22,9 @@ export default function Header() {
         <View style={styles.header}>
           {/* Logo */}
 
-          <Image source={require('~/assets/images/logo.jpg')} style={styles.logo} />
+          <TouchableOpacity onPress={() => router.push('/')}>
+            <Image source={require('~/assets/images/logo.jpg')} style={styles.logo} />
+          </TouchableOpacity>
           {/* Search Input */}
           <TextInput style={styles.input} placeholder="Search..." placeholderTextColor="#888" />
 

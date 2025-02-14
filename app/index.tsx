@@ -1,14 +1,29 @@
-import { View } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import Header from './components/header';
-import Bestsell from './page/bestsell';
 import Catalog from './components/catalog';
+import Bestseller from './components/bestseller';
+import Banner from './components/banner';
+
 export default function App() {
   return (
-    <View style={{ flex: 1 }}>
+    <View style={styles.container}>
       <Header />
-      <View style={{ flex: 1 }}>
+      <ScrollView contentContainerStyle={styles.contentWrapper}>
         <Catalog />
-      </View>
+        <Banner />
+        <Bestseller />
+      </ScrollView>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  contentWrapper: {
+    padding: 16,
+    flexGrow: 1,
+  },
+});

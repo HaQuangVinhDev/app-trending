@@ -1,30 +1,31 @@
-import { Fullscreen } from 'lucide-react-native';
-import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+const { width } = Dimensions.get('window');
+const ITEM_SIZE = width / 2 - 16; // Chia 2 cột trừ padding
 
 const categories = [
   {
     title: 'For Her',
-    image: require('~/assets/images/icon.png'),
+    image: require('~/assets/images/1oftaJ3OVq__24011306118_web-1_400x.webp'),
   },
   {
     title: 'For Him',
-    image: require('~/assets/images/I9rUKYrNvO__web1_400x.webp'),
+    image: require('~/assets/images/1oftaJ3OVq__24011306118_web-1_400x.webp'),
   },
   {
     title: 'For Couples',
-    image: require('~/assets/images/Group_34541_4_400x.png'),
+    image: require('~/assets/images/1oftaJ3OVq__24011306118_web-1_400x.webp'),
   },
   {
     title: 'For Friends',
-    image: require('~/assets/images/I9rUKYrNvO__web1_400x.webp'),
+    image: require('~/assets/images/1oftaJ3OVq__24011306118_web-1_400x.webp'),
   },
   {
     title: 'For Siblings',
-    image: require('~/assets/images/I9rUKYrNvO__web1_400x.webp'),
+    image: require('~/assets/images/1oftaJ3OVq__24011306118_web-1_400x.webp'),
   },
   {
     title: 'For Pets',
-    image: require('~/assets/images/I9rUKYrNvO__web1_400x.webp'),
+    image: require('~/assets/images/1oftaJ3OVq__24011306118_web-1_400x.webp'),
   },
 ];
 
@@ -32,6 +33,7 @@ export default function CategoryGrid() {
   return (
     <View style={styles.container}>
       <FlatList
+        scrollEnabled={false}
         data={categories}
         numColumns={2} // Có thể chỉnh thành 3 nếu muốn
         keyExtractor={(item) => item.title}
@@ -58,6 +60,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   card: {
+    width: ITEM_SIZE,
     flex: 1,
     backgroundColor: '#fff',
     borderRadius: 8,
@@ -71,8 +74,8 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   image: {
-    width: 150,
-    height: 150,
+    width: '100%',
+    height: ITEM_SIZE,
     borderRadius: 8,
     resizeMode: 'cover',
   },
