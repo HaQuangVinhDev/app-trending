@@ -1,32 +1,32 @@
 import { Gift } from 'lucide-react-native';
 import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 const { width } = Dimensions.get('window');
-const ITEM_SIZE = width / 2 - 16; // Chia 2 cột trừ padding
+const ITEM_SIZE = Math.floor((width - 32) / 2); // Trừ khoảng padding 16px x 2
 
 const categories = [
   {
     title: 'For Her',
-    image: require('~/assets/images/1oftaJ3OVq__24011306118_web-1_400x.webp'),
+    image: require('~/assets/images/Group_34541_6_400x.avif'),
   },
   {
     title: 'For Him',
-    image: require('~/assets/images/1oftaJ3OVq__24011306118_web-1_400x.webp'),
+    image: require('~/assets/images/Group_34541_1_400x.avif'),
   },
   {
     title: 'For Couples',
-    image: require('~/assets/images/1oftaJ3OVq__24011306118_web-1_400x.webp'),
+    image: require('~/assets/images/Group_34541_2_400x.avif'),
   },
   {
     title: 'For Friends',
-    image: require('~/assets/images/1oftaJ3OVq__24011306118_web-1_400x.webp'),
+    image: require('~/assets/images/Group_34541_3_400x.avif'),
   },
   {
     title: 'For Siblings',
-    image: require('~/assets/images/1oftaJ3OVq__24011306118_web-1_400x.webp'),
+    image: require('~/assets/images/Group_34541_4_400x.avif'),
   },
   {
     title: 'For Pets',
-    image: require('~/assets/images/1oftaJ3OVq__24011306118_web-1_400x.webp'),
+    image: require('~/assets/images/Group_34541_5_400x.avif'),
   },
 ];
 

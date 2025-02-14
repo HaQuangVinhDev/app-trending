@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
-import Carousel from 'react-native-snap-carousel';
+import { View, Text, Image, TouchableOpacity, StyleSheet, FlatList, Dimensions } from 'react-native';
+
 const { width: screenWidth } = Dimensions.get('window');
 
 interface Product {
@@ -40,55 +40,36 @@ const products: Product[] = [
     name: 'Couple Custom Moon Phase',
     image: 'https://trendingcustom.com/cdn/shop/files/Group_34896_200x.png?v=1728357839',
   },
-  {
-    id: 7,
-    name: 'Couple Custom Moon Phase',
-    image: 'https://trendingcustom.com/cdn/shop/files/image_c7389e35-c690-4db2-9eff-c7a2f9228649_200x.png?v=1728358245',
-  },
-  {
-    id: 8,
-    name: 'Couple Custom Moon Phase',
-    image: 'https://trendingcustom.com/cdn/shop/files/Group_34896_200x.png?v=1728357839',
-  },
-  {
-    id: 9,
-    name: 'Couple Custom Moon Phase',
-    image: 'https://trendingcustom.com/cdn/shop/files/Group_34896_200x.png?v=1728357839',
-  },
-  {
-    id: 10,
-    name: 'Couple Custom Moon Phase',
-    image: 'https://trendingcustom.com/cdn/shop/files/Group_34896_200x.png?v=1728357839',
-  },
 ];
 
-const renderItem = ({ item }: { item: Product }) => {
-  return (
-    <View style={styles.card}>
-      <Image source={{ uri: item.image }} style={styles.image} />
-      <Text style={styles.productName}>{item.name}</Text>
-    </View>
-  );
-};
+const renderItem = ({ item }: { item: Product }) => (
+  <View style={styles.card}>
+    <Image source={{ uri: item.image }} style={styles.image} />
+    <Text style={styles.productName}>{item.name}</Text>
+  </View>
+);
 
 export default function People() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>See what people are saying!</Text>
-        <TouchableOpacity>
+      </View>
+
+      {/* FlatList thay thế Carousel */}
+      <FlatList
+        data={products}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id.toString()}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.listContainer}
+      />
+      <View style={styles.footer}>
+        <TouchableOpacity onPress={() => alert('See all products')}>
           <Text style={styles.seeAll}>See all products →</Text>
         </TouchableOpacity>
       </View>
-
-      <Carousel
-        data={products}
-        renderItem={renderItem}
-        sliderWidth={screenWidth}
-        itemWidth={screenWidth * 0.8}
-        layout={'default'}
-        loop={true}
-      />
     </View>
   );
 }
@@ -102,6 +83,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 16,
   },
+  footer: {
+    alignItems: 'center',
+    marginBottom: 16,
+  },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
@@ -110,6 +95,9 @@ const styles = StyleSheet.create({
   seeAll: {
     color: 'blue',
     fontSize: 16,
+  },
+  listContainer: {
+    paddingHorizontal: 8,
   },
   card: {
     backgroundColor: 'white',
@@ -121,6 +109,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 5,
+    width: screenWidth * 0.8,
+    marginHorizontal: 8,
   },
   image: {
     width: '100%',

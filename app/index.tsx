@@ -6,13 +6,22 @@ import Banner from './components/banner';
 import Picture from './components/Picture';
 import Gifts from './components/gifts';
 import Footer from './components/footer';
+import Best from './components/best';
+import OurBlog from './components/ourblog';
+import Card from './components/card';
+import Ban from './components/ban';
+
 const sections = [
   { id: '1', component: <Catalog /> },
   { id: '2', component: <Bestseller /> },
   { id: '3', component: <Banner /> },
-  { id: '4', component: <Picture /> },
-  { id: '5', component: <Gifts /> },
-  { id: '6', component: <Footer /> },
+  { id: '4', component: <Ban /> },
+  { id: '5', component: <Picture /> },
+  { id: '6', component: <Gifts /> },
+  { id: '7', component: <Best /> },
+  { id: '8', component: <Card /> },
+  { id: '9', component: <OurBlog /> },
+  { id: '10', component: <Footer /> },
 ];
 
 export default function App() {

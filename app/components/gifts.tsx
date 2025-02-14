@@ -22,7 +22,8 @@ const BestSellers = () => {
           <Text style={styles.originalPrice}>${item.originalPrice.toFixed(2)} USD</Text>
         </View>
         <View style={styles.ratingContainer}>
-          <Text style={styles.starRating}>{'★'.repeat(5)}</Text>
+          <Text style={styles.starRating}>{Array(5).fill('★').join('')}</Text>
+
           <Text style={styles.reviewCount}>({item.reviews})</Text>
         </View>
       </View>

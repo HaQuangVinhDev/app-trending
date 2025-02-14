@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Picker } from '@react-native-picker/picker';
-import { Link, router } from 'expo-router';
+import { router } from 'expo-router';
 import { Heart, ShoppingCart, User, Menu, Star, Gift, Truck } from 'lucide-react-native';
 import { View, Text, Image, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 
@@ -21,10 +21,10 @@ export default function Header() {
       <View style={styles.container}>
         <View style={styles.header}>
           {/* Logo */}
-
           <TouchableOpacity onPress={() => router.push('/')}>
             <Image source={require('~/assets/images/logo.jpg')} style={styles.logo} />
           </TouchableOpacity>
+
           {/* Search Input */}
           <TextInput style={styles.input} placeholder="Search..." placeholderTextColor="#888" />
 
@@ -39,21 +39,21 @@ export default function Header() {
           <View style={styles.menu}>
             <TouchableOpacity style={styles.menuItem}>
               <Star size={20} color="#f13c20" />
-              <Link href="/" style={styles.menuText}>
+              <Text style={styles.menuText} onPress={() => router.push('/')}>
                 Reviews
-              </Link>
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.menuItem}>
               <Gift size={20} color="#f13c20" />
-              <Link href="/" style={styles.menuText}>
+              <Text style={styles.menuText} onPress={() => router.push('/')}>
                 Reward
-              </Link>
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.menuItem}>
               <Truck size={20} color="#f13c20" />
-              <Link href="/" style={styles.menuText}>
+              <Text style={styles.menuText} onPress={() => router.push('/')}>
                 Track Order
-              </Link>
+              </Text>
             </TouchableOpacity>
 
             {/* Currency Picker */}
@@ -62,8 +62,8 @@ export default function Header() {
               <View style={styles.pickerWrapper}>
                 <Picker
                   selectedValue={selectedCurrency}
-                  onValueChange={(itemValue: string) => setSelectedCurrency(itemValue)}
-                  mode="dropdown" // Thêm mode này để hiển thị danh sách chọn
+                  onValueChange={(itemValue) => setSelectedCurrency(itemValue)}
+                  mode="dropdown"
                   style={styles.picker}
                 >
                   <Picker.Item label="USD" value="USD" />
@@ -77,20 +77,22 @@ export default function Header() {
             {/* Icons */}
             <View style={styles.iconContainer}>
               <TouchableOpacity>
-                <Heart size={24} color="#4A4A4A" style={styles.menuItem} />
+                <Heart size={24} color="#4A4A4A" />
               </TouchableOpacity>
               <TouchableOpacity>
-                <User size={24} color="#4A4A4A" style={styles.menuItem} />
+                <User size={24} color="#4A4A4A" />
               </TouchableOpacity>
               <TouchableOpacity>
-                <ShoppingCart size={24} color="#4A4A4A" style={styles.menuItem} />
+                <ShoppingCart size={24} color="#4A4A4A" />
               </TouchableOpacity>
             </View>
+
+            {/* Navigation Links */}
             <View>
-              <TouchableOpacity>
-                <Text style={[styles.navItemText]}>Home</Text>
+              <TouchableOpacity onPress={() => router.push('/')}>
+                <Text style={styles.navItemText}>Home</Text>
               </TouchableOpacity>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => router.push('/bestsellermain')}>
                 <Text style={styles.navItemText}>Best Sellers</Text>
               </TouchableOpacity>
               <TouchableOpacity>
@@ -114,6 +116,8 @@ export default function Header() {
             </View>
           </View>
         )}
+
+        {/* Trust Badge */}
         <View style={styles.trustBadge}>
           <Text style={styles.trustBadgeText}>
             Trusted by more than <Text style={styles.boldText}>2 Million Customers</Text> and{' '}
@@ -188,7 +192,7 @@ const styles = StyleSheet.create({
   },
   picker: {
     height: 60,
-    width: 150, // Giảm độ rộng picker
+    width: 150,
   },
   iconContainer: {
     flexDirection: 'row',
@@ -198,7 +202,6 @@ const styles = StyleSheet.create({
     borderTopColor: '#ddd',
     marginTop: 10,
   },
-
   trustBadge: {
     marginTop: 16,
     marginBottom: 16,
@@ -214,8 +217,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#4A4A4A',
     marginBottom: 8,
-  },
-  activeNavItem: {
-    color: '#F04B23',
   },
 });

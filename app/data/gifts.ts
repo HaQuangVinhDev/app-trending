@@ -4,7 +4,7 @@ export const Gifts: any[] = [
     name: 'Our Moon Couple Gift Moon',
     price: 17.99,
     originalPrice: 27.99,
-    image: require('~/assets/images/favicon.png'),
+    image: require('~/assets/images/Moon1.avif'),
     reviews: 18,
   },
   {
@@ -12,7 +12,7 @@ export const Gifts: any[] = [
     name: 'Family Heart Tree Sitting',
     price: 34.99,
     originalPrice: 44.99,
-    image: require('~/assets/images/I9rUKYrNvO__web1_400x.webp'),
+    image: require('~/assets/images/moon2.avif'),
     reviews: 18,
   },
   {
@@ -20,7 +20,7 @@ export const Gifts: any[] = [
     name: 'Our Moon Couple Gift Moon',
     price: 39.99,
     originalPrice: 44.99,
-    image: require('~/assets/images/I9rUKYrNvO__web1_400x.webp'),
+    image: require('~/assets/images/moon3.avif'),
     reviews: 18,
   },
   {
@@ -28,7 +28,7 @@ export const Gifts: any[] = [
     name: 'Starry Night Couple Custom',
     price: 24.99,
     originalPrice: 34.99,
-    image: require('~/assets/images/I9rUKYrNvO__web1_400x.webp'),
+    image: require('~/assets/images/moon4.avif'),
     reviews: 18,
   },
   {
@@ -36,7 +36,7 @@ export const Gifts: any[] = [
     name: 'Always With You Cardinal',
     price: 34.99,
     originalPrice: 44.99,
-    image: require('~/assets/images/I9rUKYrNvO__web1_400x.webp'),
+    image: require('~/assets/images/moon5.avif'),
     reviews: 18,
   },
   {
@@ -44,7 +44,7 @@ export const Gifts: any[] = [
     name: 'Couple Custom Moon Phase',
     price: 24.99,
     originalPrice: 34.99,
-    image: require('~/assets/images/I9rUKYrNvO__web1_400x.webp'),
+    image: require('~/assets/images/Group_35118_5737a383-59d5-4934-bd30-08d94872b47c.webp'),
     reviews: 18,
   },
 ];
