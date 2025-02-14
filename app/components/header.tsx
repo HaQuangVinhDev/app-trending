@@ -62,7 +62,8 @@ export default function Header() {
               <View style={styles.pickerWrapper}>
                 <Picker
                   selectedValue={selectedCurrency}
-                  onValueChange={(itemValue) => setSelectedCurrency(itemValue)}
+                  onValueChange={(itemValue: string) => setSelectedCurrency(itemValue)}
+                  mode="dropdown" // Thêm mode này để hiển thị danh sách chọn
                   style={styles.picker}
                 >
                   <Picker.Item label="USD" value="USD" />

@@ -1,18 +1,31 @@
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, FlatList } from 'react-native';
 import Header from './components/header';
 import Catalog from './components/catalog';
 import Bestseller from './components/bestseller';
 import Banner from './components/banner';
+import Picture from './components/Picture';
+import Gifts from './components/gifts';
+import Footer from './components/footer';
+const sections = [
+  { id: '1', component: <Catalog /> },
+  { id: '2', component: <Bestseller /> },
+  { id: '3', component: <Banner /> },
+  { id: '4', component: <Picture /> },
+  { id: '5', component: <Gifts /> },
+  { id: '6', component: <Footer /> },
+];
 
 export default function App() {
   return (
     <View style={styles.container}>
       <Header />
-      <ScrollView contentContainerStyle={styles.contentWrapper}>
-        <Catalog />
-        <Banner />
-        <Bestseller />
-      </ScrollView>
+      <FlatList
+        data={sections}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => <View>{item.component}</View>}
+        contentContainerStyle={styles.contentWrapper}
+        showsVerticalScrollIndicator={false}
+      />
     </View>
   );
 }
@@ -24,6 +37,5 @@ const styles = StyleSheet.create({
   },
   contentWrapper: {
     padding: 16,
-    flexGrow: 1,
   },
 });

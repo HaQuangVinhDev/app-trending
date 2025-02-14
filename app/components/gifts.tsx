@@ -1,19 +1,17 @@
 import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity, useWindowDimensions } from 'react-native';
 import { Gift } from 'lucide-react-native';
-import { useRouter } from 'expo-router';
-import { products } from '../data/product';
+import { Gifts } from '../data/gifts';
 
-export default function CategoryGrid() {
+const BestSellers = () => {
   const { width } = useWindowDimensions();
-  const router = useRouter();
   const numColumns = Math.floor(width / 150);
 
-  const renderItem = ({ item }: { item: (typeof products)[0] }) => (
-    <TouchableOpacity
-      style={styles.productContainer}
-      activeOpacity={0.7}
-      onPress={() => router.push({ pathname: '/data/product', params: { id: item.id } })}
-    >
+  const renderItem = ({
+    item,
+  }: {
+    item: { id: number; image: any; name: string; price: number; originalPrice: number; reviews: number };
+  }) => (
+    <TouchableOpacity style={styles.productContainer}>
       <View style={styles.imageContainer}>
         <Image source={item.image} style={styles.productImage} />
       </View>
@@ -35,21 +33,29 @@ export default function CategoryGrid() {
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>🔥 Best Sellers - Customer Favorites</Text>
+          <Gift color="#F04B23" size={24} />
+          <Text style={styles.title}>Gifts for Couples</Text>
         </View>
-        <Text style={styles.subtitle}>Explore top-rated products loved by our customers!</Text>
+        <Text style={styles.subtitle}>
+          Celebrate love with personalized gifts made for couples. From heartfelt keepsakes to custom creations, find
+          the perfect way to cherish their bond and create lasting memories.
+        </Text>
       </View>
 
       <FlatList
-        data={products}
+        data={Gifts}
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
         numColumns={numColumns}
         columnWrapperStyle={styles.columnWrapper}
       />
+
+      <TouchableOpacity style={styles.seeAllButton}>
+        <Text style={styles.seeAllText}>See all products →</Text>
+      </TouchableOpacity>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -65,7 +71,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   title: {
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: 'bold',
     marginLeft: 8,
   },
@@ -130,4 +136,15 @@ const styles = StyleSheet.create({
     color: '#666',
     marginLeft: 4,
   },
+  seeAllButton: {
+    alignItems: 'center',
+    marginTop: 24,
+  },
+  seeAllText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#007AFF',
+  },
 });
+
+export default BestSellers;

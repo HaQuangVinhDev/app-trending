@@ -1,3 +1,4 @@
+import { Gift } from 'lucide-react-native';
 import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 const { width } = Dimensions.get('window');
 const ITEM_SIZE = width / 2 - 16; // Chia 2 cột trừ padding
@@ -84,5 +85,16 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '500',
     textAlign: 'center',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
+  },
+  headerText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginLeft: 8,
   },
 });
