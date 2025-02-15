@@ -11,6 +11,7 @@ import OurBlog from './components/ourblog';
 import Card from './components/card';
 import Ban from './components/ban';
 import Question from './components/quesion';
+import FormContent from './components/formcontent';
 
 const sections = [
   { id: '1', component: <Catalog /> },

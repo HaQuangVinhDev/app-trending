@@ -5,14 +5,12 @@ import Header from './components/header';
 import Footer from './components/footer';
 import Question from './components/quesion';
 import Banner from './components/Bestseller/banner';
-import Cart from './Cart/index';
 
 const seller = [
   { id: '2', component: <Banner /> },
   { id: '1', component: <BodyHeader /> },
   { id: '3', component: <Question /> },
   { id: '4', component: <Footer /> },
-  { id: '5', component: <Cart /> },
 ];
 export default function BestSellerMain() {
   return (

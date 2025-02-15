@@ -1,19 +1,120 @@
-import { FC, useState } from 'react';
-import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { FC, useState, useEffect } from 'react';
+import { View, Text, Image, ScrollView, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useLocalSearchParams } from 'expo-router';
 import ProductItem from '../data/productitem';
 import Header from '../components/header';
 
+interface CartItem {
+  productId: string;
+  title: string;
+  image: any;
+  price: number;
+  quantity: number;
+  color: string;
+  size: string;
+}
+
+interface Review {
+  id: string;
+  productId: string;
+  user: string;
+  rating: number;
+  comment: string;
+}
+
 const ProductDetail: FC = () => {
   const { id } = useLocalSearchParams();
-  const router = useRouter();
-  const productitem = ProductItem.find((item) => item.id === Number(id));
-  const [currentImage, setCurrentImage] = useState(productitem?.image);
+  const product = ProductItem.find((item) => item.id.toString() === id);
   const [quantity, setQuantity] = useState(1);
+  const [selectedColor, setSelectedColor] = useState(product?.colors?.[0] || '');
+  const [selectedSize, setSelectedSize] = useState(product?.sizes?.[0] || '');
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [newReview, setNewReview] = useState('');
+  const [rating, setRating] = useState(5);
 
-  console.log('Product Item:', productitem);
+  // Load đánh giá từ AsyncStorage
+  useEffect(() => {
+    const loadReviews = async () => {
+      try {
+        const storedReviews = await AsyncStorage.getItem('reviews');
+        if (storedReviews) {
+          const parsedReviews: Review[] = JSON.parse(storedReviews);
+          setReviews(parsedReviews.filter((r) => r.productId === id));
+        }
+      } catch (error) {
+        console.error('Error loading reviews:', error);
+      }
+    };
 
-  if (!productitem) {
+    loadReviews();
+  }, [id]);
+
+  // Thêm đánh giá mới
+  const addReview = async () => {
+    if (newReview.trim() === '') {
+      Alert.alert('Lỗi', 'Vui lòng nhập nội dung đánh giá!');
+      return;
+    }
+
+    const review: Review = {
+      id: Date.now().toString(),
+      productId: id as string,
+      user: 'User', // Có thể thay bằng username thực tế nếu có hệ thống user
+      rating,
+      comment: newReview,
+    };
+
+    try {
+      const storedReviews = await AsyncStorage.getItem('reviews');
+      const updatedReviews = storedReviews ? JSON.parse(storedReviews) : [];
+      updatedReviews.push(review);
+
+      await AsyncStorage.setItem('reviews', JSON.stringify(updatedReviews));
+      setReviews((prev) => [...prev, review]);
+      setNewReview('');
+      setRating(5);
+    } catch (error) {
+      console.error('Error saving review:', error);
+    }
+  };
+
+  const addToCart = async () => {
+    if (!product) return;
+
+    const newItem: CartItem = {
+      productId: product.id.toString(),
+      title: product.title,
+      image: product.image,
+      price: parseFloat(product.price.replace(/[^0-9.]/g, '')),
+      quantity,
+      color: selectedColor,
+      size: selectedSize,
+    };
+
+    try {
+      const storedCart = await AsyncStorage.getItem('cart');
+      const cart = storedCart ? JSON.parse(storedCart) : [];
+
+      const existingIndex = cart.findIndex(
+        (item: CartItem) =>
+          item.productId === newItem.productId && item.color === selectedColor && item.size === selectedSize,
+      );
+
+      if (existingIndex > -1) {
+        cart[existingIndex].quantity += quantity;
+      } else {
+        cart.push(newItem);
+      }
+
+      await AsyncStorage.setItem('cart', JSON.stringify(cart));
+      Alert.alert('Success', 'Added to cart!');
+    } catch (error) {
+      console.error('Error saving cart:', error);
+    }
+  };
+
+  if (!product) {
     return (
       <View style={styles.center}>
         <Text style={styles.errorText}>Product not found</Text>
@@ -21,47 +122,82 @@ const ProductDetail: FC = () => {
     );
   }
 
-  const formatPrice = (priceString: string) => {
-    return parseFloat(priceString.replace(/[^0-9.]/g, ''));
-  };
-
-  const price = formatPrice(productitem?.price) || 0;
-  const oldPrice = formatPrice(productitem?.oldPrice) || null;
-
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Header />
-      <View style={styles.imageContainer}>
-        <Image source={currentImage} style={styles.mainImage} resizeMode="cover" />
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.thumbnailContainer}>
-          {[productitem.image].map((thumb, index) => (
-            <TouchableOpacity key={index} onPress={() => setCurrentImage(thumb)}>
-              <Image source={thumb} style={styles.thumbnail} resizeMode="cover" />
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </View>
-      <View style={styles.contentContainer}>
-        <Text style={styles.title}>{productitem.title}</Text>
-        <View style={styles.priceContainer}>
-          <Text style={styles.price}>${price.toFixed(2)}</Text>
-          {oldPrice && <Text style={styles.oldPrice}>${oldPrice.toFixed(2)}</Text>}
-        </View>
-        <Text style={styles.reviews}>{productitem.reviews} reviews</Text>
+      <Image source={product.image} style={styles.image} />
+      <Text style={styles.title}>{product.title}</Text>
+      <Text style={styles.price}>${parseFloat(product.price.replace(/[^0-9.]/g, '')).toFixed(2)}</Text>
+
+      {/* Chọn màu sắc */}
+      <Text style={styles.optionTitle}>Select Color:</Text>
+      <View style={styles.colorContainer}>
+        {product.colors?.map((color, index) => (
+          <TouchableOpacity
+            key={index}
+            style={[styles.colorOption, selectedColor === color && styles.selectedColor]}
+            onPress={() => setSelectedColor(color)}
+          >
+            <Text>{color}</Text>
+          </TouchableOpacity>
+        ))}
       </View>
 
-      <View style={styles.paymentContainer}>
-        <View style={styles.quantityContainer}>
-          <TouchableOpacity onPress={() => setQuantity(Math.max(1, quantity - 1))} style={styles.quantityButton}>
-            <Text style={styles.quantityButtonText}>-</Text>
+      {/* Chọn kích thước */}
+      <Text style={styles.optionTitle}>Select Size:</Text>
+      <View style={styles.sizeContainer}>
+        {product.sizes?.map((size, index) => (
+          <TouchableOpacity
+            key={index}
+            style={[styles.sizeOption, selectedSize === size && styles.selectedSize]}
+            onPress={() => setSelectedSize(size)}
+          >
+            <Text>{size}</Text>
           </TouchableOpacity>
-          <Text style={styles.quantityText}>{quantity}</Text>
-          <TouchableOpacity onPress={() => setQuantity(quantity + 1)} style={styles.quantityButton}>
-            <Text style={styles.quantityButtonText}>+</Text>
-          </TouchableOpacity>
-        </View>
-        <TouchableOpacity onPress={() => router.push('/Cart/cart')} style={styles.addToCartButton}>
-          <Text style={styles.addToCartText}>Add to Cart</Text>
+        ))}
+      </View>
+
+      {/* Nút tăng/giảm số lượng */}
+      <View style={styles.quantityContainer}>
+        <TouchableOpacity onPress={() => setQuantity(Math.max(1, quantity - 1))} style={styles.quantityButton}>
+          <Text style={styles.quantityButtonText}>-</Text>
+        </TouchableOpacity>
+        <Text style={styles.quantityText}>{quantity}</Text>
+        <TouchableOpacity onPress={() => setQuantity(quantity + 1)} style={styles.quantityButton}>
+          <Text style={styles.quantityButtonText}>+</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Nút Thêm vào giỏ hàng */}
+      <TouchableOpacity onPress={addToCart} style={styles.addToCartButton}>
+        <Text style={styles.addToCartText}>Add to Cart</Text>
+      </TouchableOpacity>
+
+      {/* Danh sách đánh giá */}
+      <View style={styles.reviewSection}>
+        <Text style={styles.reviewTitle}>Reviews</Text>
+        {reviews.length === 0 ? (
+          <Text>No reviews yet. Be the first!</Text>
+        ) : (
+          reviews.map((review) => (
+            <View key={review.id} style={styles.reviewItem}>
+              <Text style={styles.reviewUser}>
+                {review.user} ({review.rating}★):
+              </Text>
+              <Text>{review.comment}</Text>
+            </View>
+          ))
+        )}
+
+        {/* Thêm đánh giá mới */}
+        <TextInput
+          style={styles.reviewInput}
+          placeholder="Write a review..."
+          value={newReview}
+          onChangeText={setNewReview}
+        />
+        <TouchableOpacity onPress={addReview} style={styles.reviewButton}>
+          <Text style={styles.reviewButtonText}>Add Review</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -69,111 +205,32 @@ const ProductDetail: FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 16,
-    backgroundColor: '#f8f8f8',
-  },
-  center: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  errorText: {
-    fontSize: 18,
-    color: 'red',
-  },
-  imageContainer: {
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  mainImage: {
-    width: '90%',
-    height: 320,
-    borderRadius: 10,
-    marginBottom: 10,
-  },
-  thumbnailContainer: {
-    flexDirection: 'row',
-    gap: 10,
-  },
-  thumbnail: {
-    width: 70,
-    height: 70,
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: '#ddd',
-  },
-  contentContainer: {
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: '#333',
-  },
-  priceContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginVertical: 8,
-  },
-  price: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#2e7d32',
-  },
-  oldPrice: {
-    fontSize: 18,
-    textDecorationLine: 'line-through',
-    color: '#888',
-  },
-  reviews: {
-    fontSize: 16,
-    color: '#555',
-  },
-  paymentContainer: {
-    alignItems: 'center',
-    paddingVertical: 20,
-  },
-  quantityContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  quantityButton: {
-    padding: 10,
-    backgroundColor: '#ddd',
-    borderRadius: 8,
-    marginHorizontal: 10,
-    minWidth: 40,
-    alignItems: 'center',
-  },
-  quantityButtonText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  quantityText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  addToCartButton: {
-    backgroundColor: '#2e7d32',
-    paddingVertical: 14,
-    paddingHorizontal: 40,
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 4,
-  },
-  addToCartText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: 'white',
-  },
+  center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  container: { padding: 16 },
+  image: { width: '100%', height: 300 },
+  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 8 },
+  price: { fontSize: 20, fontWeight: 'bold', color: 'green' },
+  colorContainer: { flexDirection: 'row', marginVertical: 10 },
+  sizeContainer: { flexDirection: 'row', marginVertical: 10 },
+  sizeOption: { padding: 10, borderWidth: 1, margin: 5 },
+  optionTitle: { fontSize: 18, fontWeight: 'bold', marginVertical: 10 },
+  selectedSize: { borderColor: 'blue', borderWidth: 2 },
+  colorOption: { padding: 10, borderWidth: 1, margin: 5 },
+  selectedColor: { borderColor: 'blue', borderWidth: 2 },
+  quantityContainer: { flexDirection: 'row', marginVertical: 10 },
+  quantityButton: { padding: 10, borderWidth: 1 },
+  quantityText: { fontSize: 18, marginHorizontal: 10 },
+  quantityButtonText: { fontSize: 18, fontWeight: 'bold' },
+  addToCartButton: { backgroundColor: 'blue', padding: 10, alignItems: 'center' },
+  addToCartText: { color: 'white', fontSize: 18 },
+  reviewSection: { marginTop: 20 },
+  reviewTitle: { fontSize: 20, fontWeight: 'bold' },
+  reviewItem: { borderBottomWidth: 1, paddingVertical: 8 },
+  reviewUser: { fontWeight: 'bold' },
+  reviewInput: { borderWidth: 1, padding: 8, marginVertical: 10 },
+  reviewButton: { backgroundColor: 'green', padding: 10, alignItems: 'center' },
+  reviewButtonText: { color: 'white', fontSize: 18 },
+  errorText: { fontSize: 18, color: 'red', textAlign: 'center', marginTop: 20 },
 });
 
 export default ProductDetail;

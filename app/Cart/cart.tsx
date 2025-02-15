@@ -1,33 +1,76 @@
-import { View, Text, FlatList, StyleSheet } from 'react-native';
-import type { Product } from '../data/cartproduct';
+import { useEffect, useState } from 'react';
+import { View, Text, FlatList, Image, Button, StyleSheet, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from 'expo-router';
 
-interface CartProps {
-  items: Product[];
+interface CartItem {
+  productId: string;
+  title: string;
+  image: any;
+  price: number;
+  quantity: number;
+  color: string;
+  size: string;
 }
 
-export default function Cart({ items = [] }: CartProps) {
-  const total = items.reduce((sum, item) => sum + item.price, 0);
+export default function Cart() {
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const router = useRouter();
+
+  useEffect(() => {
+    const loadCart = async () => {
+      try {
+        const storedCart = await AsyncStorage.getItem('cart');
+        if (storedCart) {
+          setCartItems(JSON.parse(storedCart));
+        }
+      } catch (error) {
+        console.error('Error loading cart:', error);
+      }
+    };
+
+    loadCart();
+  }, []);
+
+  const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+  const handleCheckout = () => {
+    if (cartItems.length === 0) {
+      Alert.alert('Thông báo', 'Giỏ hàng của bạn đang trống!');
+      return;
+    }
+
+    // Chuyển sang trang thanh toán
+    router.push('/Cart/checkout');
+  };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Cart</Text>
-      {items.length === 0 ? (
+      <Text style={styles.title}>Your Cart</Text>
+      {cartItems.length === 0 ? (
         <Text>Your cart is empty</Text>
       ) : (
         <>
           <FlatList
-            data={items}
-            keyExtractor={(item, index) => index.toString()}
+            data={cartItems}
+            keyExtractor={(item) => item.productId}
             renderItem={({ item }) => (
               <View style={styles.item}>
-                <Text>{item.name}</Text>
-                <Text>${item.price.toFixed(2)}</Text>
+                <Image source={item.image} style={styles.image} />
+                <View style={styles.itemDetails}>
+                  <Text>
+                    {item.title} (x{item.quantity})
+                  </Text>
+                  <Text>
+                    Color: {item.color} - Size: {item.size}
+                  </Text>
+                  <Text>${(item.price * item.quantity).toFixed(2)}</Text>
+                </View>
               </View>
             )}
           />
-          <View style={styles.totalContainer}>
-            <Text style={styles.totalText}>Total: ${total.toFixed(2)}</Text>
-          </View>
+          <Text style={styles.totalText}>Total: ${total.toFixed(2)}</Text>
+          <Button title="Proceed to Checkout" onPress={handleCheckout} color="green" />
         </>
       )}
     </View>
@@ -35,27 +78,10 @@ export default function Cart({ items = [] }: CartProps) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    maxWidth: 400,
-    padding: 16,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: '600',
-    marginBottom: 12,
-  },
-  item: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 8,
-  },
-  totalContainer: {
-    borderTopWidth: 1,
-    marginTop: 12,
-    paddingTop: 8,
-  },
-  totalText: {
-    fontWeight: 'bold',
-  },
+  container: { padding: 16 },
+  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 12 },
+  item: { flexDirection: 'row', paddingVertical: 8, borderBottomWidth: 1 },
+  image: { width: 50, height: 50, marginRight: 10 },
+  itemDetails: { flex: 1 },
+  totalText: { fontSize: 18, fontWeight: 'bold', marginTop: 10, marginBottom: 10 },
 });

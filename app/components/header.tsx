@@ -83,7 +83,7 @@ export default function Header() {
               <TouchableOpacity>
                 <User size={24} color="#4A4A4A" />
               </TouchableOpacity>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => router.push('/Cart/cart')}>
                 <ShoppingCart size={24} color="#4A4A4A" />
               </TouchableOpacity>
             </View>
@@ -96,7 +96,7 @@ export default function Header() {
               <TouchableOpacity onPress={() => router.push('/bestsellermain')}>
                 <Text style={styles.navItemText}>Best Sellers</Text>
               </TouchableOpacity>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => router.push('/components/formcontent')}>
                 <Text style={styles.navItemText}>New Arrivals</Text>
               </TouchableOpacity>
               <TouchableOpacity>
