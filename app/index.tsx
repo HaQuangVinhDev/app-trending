@@ -10,6 +10,7 @@ import Best from './components/best';
 import OurBlog from './components/ourblog';
 import Card from './components/card';
 import Ban from './components/ban';
+import Question from './components/quesion';
 
 const sections = [
   { id: '1', component: <Catalog /> },
@@ -21,7 +22,9 @@ const sections = [
   { id: '7', component: <Best /> },
   { id: '8', component: <Card /> },
   { id: '9', component: <OurBlog /> },
-  { id: '10', component: <Footer /> },
+  { id: '10', component: <Question /> },
+
+  { id: '11', component: <Footer /> },
 ];
 
 export default function App() {

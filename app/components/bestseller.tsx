@@ -1,5 +1,5 @@
 import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity, useWindowDimensions } from 'react-native';
-import { Gift } from 'lucide-react-native';
+
 import { useRouter } from 'expo-router';
 import { products } from '../data/product';
 

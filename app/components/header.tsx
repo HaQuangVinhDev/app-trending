@@ -49,11 +49,12 @@ export default function Header() {
                 Reward
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItem}>
+            <TouchableOpacity
+              style={styles.menuItem}
+              onPress={() => router.push('/components/Bestseller/items/thumnail') as any}
+            >
               <Truck size={20} color="#f13c20" />
-              <Text style={styles.menuText} onPress={() => router.push('/')}>
-                Track Order
-              </Text>
+              <Text style={styles.menuText}>Track Order</Text>
             </TouchableOpacity>
 
             {/* Currency Picker */}
