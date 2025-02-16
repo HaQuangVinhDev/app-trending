@@ -67,7 +67,7 @@ const ProductDetail: FC = () => {
   // Thêm đánh giá mới
   const addReview = async () => {
     if (newReview.trim() === '') {
-      Alert.alert('Lỗi', 'Vui lòng nhập nội dung đánh giá!');
+      Alert.alert('Error', 'Please add review!');
       return;
     }
 
@@ -99,14 +99,14 @@ const ProductDetail: FC = () => {
 
     // Kiểm tra xem đã chọn màu và kích thước chưa
     if (!selectedColor || !selectedSize) {
-      Alert.alert('Lỗi', 'Vui lòng chọn màu sắc và kích thước!');
+      Alert.alert('Error', 'Please select a color and size!');
       return;
     }
 
     // Kiểm tra xem size có còn hàng không
     const selectedSizeObj = product.sizes.find((size) => typeof size !== 'string' && size.name === selectedSize);
     if (selectedSizeObj && typeof selectedSizeObj !== 'string' && !selectedSizeObj.inStock) {
-      Alert.alert('Lỗi', `Size ${selectedSize} đã hết hàng!`);
+      Alert.alert('Error', `Size ${selectedSize} out of stock!`);
       return;
     }
 
@@ -224,15 +224,26 @@ const ProductDetail: FC = () => {
         )}
 
         {/* Thêm đánh giá mới */}
-        <TextInput
-          style={styles.reviewInput}
-          placeholder="Write a review..."
-          value={newReview}
-          onChangeText={setNewReview}
-        />
-        <TouchableOpacity onPress={addReview} style={styles.reviewButton}>
-          <Text style={styles.reviewButtonText}>Add Review</Text>
-        </TouchableOpacity>
+        <View style={styles.reviewSection}>
+          <Text style={styles.optionTitle}>Your Rating:</Text>
+          <View style={styles.ratingContainer}>
+            {[1, 2, 3, 4, 5].map((star) => (
+              <TouchableOpacity key={star} onPress={() => setRating(star)}>
+                <Text style={[styles.star, rating >= star && styles.selectedStar]}>★</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          <TextInput
+            style={styles.reviewInput}
+            placeholder="Write a review..."
+            value={newReview}
+            onChangeText={setNewReview}
+          />
+          <TouchableOpacity onPress={addReview} style={styles.reviewButton}>
+            <Text style={styles.reviewButtonText}>Add Review</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </ScrollView>
   );
@@ -280,6 +291,9 @@ const styles = StyleSheet.create({
   reviewButton: { backgroundColor: 'green', padding: 10, alignItems: 'center' },
   reviewButtonText: { color: 'white', fontSize: 18 },
   errorText: { fontSize: 18, color: 'red', textAlign: 'center', marginTop: 20 },
+  ratingContainer: { flexDirection: 'row', marginVertical: 10 },
+  star: { fontSize: 24, color: '#ccc' },
+  selectedStar: { color: 'gold' },
 });
 
 export default ProductDetail;
