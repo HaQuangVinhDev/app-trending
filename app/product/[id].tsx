@@ -1,5 +1,15 @@
 import { FC, useState, useEffect } from 'react';
-import { View, Text, Image, ScrollView, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  ScrollView,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  ToastAndroid,
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useLocalSearchParams } from 'expo-router';
 import ProductItem from '../data/productitem';
@@ -27,8 +37,12 @@ const ProductDetail: FC = () => {
   const { id } = useLocalSearchParams();
   const product = ProductItem.find((item) => item.id.toString() === id);
   const [quantity, setQuantity] = useState(1);
-  const [selectedColor, setSelectedColor] = useState(product?.colors?.[0] || '');
-  const [selectedSize, setSelectedSize] = useState(product?.sizes?.[0] || '');
+  const [selectedColor, setSelectedColor] = useState(
+    typeof product?.colors?.[0] === 'object' ? product.colors[0].color : '',
+  );
+  const [selectedSize, setSelectedSize] = useState(
+    typeof product?.sizes?.[0] === 'object' ? product.sizes[0].name : '',
+  );
   const [reviews, setReviews] = useState<Review[]>([]);
   const [newReview, setNewReview] = useState('');
   const [rating, setRating] = useState(5);
@@ -79,8 +93,22 @@ const ProductDetail: FC = () => {
     }
   };
 
+  // Hàm thêm vào giỏ hàng
   const addToCart = async () => {
     if (!product) return;
+
+    // Kiểm tra xem đã chọn màu và kích thước chưa
+    if (!selectedColor || !selectedSize) {
+      Alert.alert('Lỗi', 'Vui lòng chọn màu sắc và kích thước!');
+      return;
+    }
+
+    // Kiểm tra xem size có còn hàng không
+    const selectedSizeObj = product.sizes.find((size) => typeof size !== 'string' && size.name === selectedSize);
+    if (selectedSizeObj && typeof selectedSizeObj !== 'string' && !selectedSizeObj.inStock) {
+      Alert.alert('Lỗi', `Size ${selectedSize} đã hết hàng!`);
+      return;
+    }
 
     const newItem: CartItem = {
       productId: product.id.toString(),
@@ -117,7 +145,7 @@ const ProductDetail: FC = () => {
   if (!product) {
     return (
       <View style={styles.center}>
-        <Text style={styles.errorText}>Product not found</Text>
+        <Text style={styles.errorText}>Product not found!</Text>
       </View>
     );
   }
@@ -135,10 +163,13 @@ const ProductDetail: FC = () => {
         {product.colors?.map((color, index) => (
           <TouchableOpacity
             key={index}
-            style={[styles.colorOption, selectedColor === color && styles.selectedColor]}
-            onPress={() => setSelectedColor(color)}
+            style={[
+              styles.colorOption,
+              selectedColor === (typeof color === 'object' ? color.name : color) && styles.selectedColor,
+            ]}
+            onPress={() => setSelectedColor(typeof color === 'object' ? color.name : color)}
           >
-            <Text>{color}</Text>
+            <Text>{typeof color === 'object' ? color.name : color}</Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -149,10 +180,13 @@ const ProductDetail: FC = () => {
         {product.sizes?.map((size, index) => (
           <TouchableOpacity
             key={index}
-            style={[styles.sizeOption, selectedSize === size && styles.selectedSize]}
-            onPress={() => setSelectedSize(size)}
+            style={[
+              styles.sizeOption,
+              selectedSize === (typeof size === 'object' ? size.name : '') && styles.selectedSize,
+            ]}
+            onPress={() => setSelectedSize(typeof size === 'object' ? size.name : '')}
           >
-            <Text>{size}</Text>
+            <Text>{typeof size === 'object' ? size.name : size}</Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -170,9 +204,8 @@ const ProductDetail: FC = () => {
 
       {/* Nút Thêm vào giỏ hàng */}
       <TouchableOpacity onPress={addToCart} style={styles.addToCartButton}>
-        <Text style={styles.addToCartText}>Add to Cart</Text>
+        <Text style={styles.addToCartText}>Add to cart</Text>
       </TouchableOpacity>
-
       {/* Danh sách đánh giá */}
       <View style={styles.reviewSection}>
         <Text style={styles.reviewTitle}>Reviews</Text>
@@ -212,11 +245,11 @@ const styles = StyleSheet.create({
   price: { fontSize: 20, fontWeight: 'bold', color: 'green' },
   colorContainer: { flexDirection: 'row', marginVertical: 10 },
   sizeContainer: { flexDirection: 'row', marginVertical: 10 },
-  sizeOption: { padding: 10, borderWidth: 1, margin: 5 },
+  sizeOption: { borderRadius: 5, padding: 10, borderWidth: 1, margin: 5 },
   optionTitle: { fontSize: 18, fontWeight: 'bold', marginVertical: 10 },
-  selectedSize: { borderColor: 'blue', borderWidth: 2 },
-  colorOption: { padding: 10, borderWidth: 1, margin: 5 },
-  selectedColor: { borderColor: 'blue', borderWidth: 2 },
+  selectedSize: { backgroundColor: '#a8a8a8', borderColor: '#a8a8a8', borderWidth: 1 },
+  colorOption: { borderRadius: 20, padding: 10, borderWidth: 1, margin: 5 },
+  selectedColor: { backgroundColor: '#4F46E5', borderColor: 'blue', borderWidth: 2 },
   quantityContainer: { flexDirection: 'row', marginVertical: 10 },
   quantityButton: { padding: 10, borderWidth: 1 },
   quantityText: { fontSize: 18, marginHorizontal: 10 },
