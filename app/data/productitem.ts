@@ -10,9 +10,9 @@ const ProductItem = [
     },
     reviews: 18,
     colors: [
-      { name: 'White', color: '#FFFFFF' },
-      { name: 'Gray', color: '#E5E7EB' },
-      { name: 'pink', color: '#ffc0cb' },
+      { name: 'White', cde: '#FFFFFF' },
+      { name: 'Gray', code: '#E5E7EB' },
+      { name: 'pink', code: '#ff0606' },
     ],
     sizes: [
       { name: 'XXS', inStock: true },
@@ -34,7 +34,7 @@ const ProductItem = [
     },
     reviews: 18,
     colors: [
-      { name: 'White', color: '#FFFFFF' },
+      { name: 'White', code: '#FFFFFF' },
       { name: 'Gray', color: '#E5E7EB' },
       { name: 'pink', color: '#ffc0cb' },
     ],
@@ -58,7 +58,7 @@ const ProductItem = [
     },
     reviews: 18,
     colors: [
-      { name: 'White', color: '#FFFFFF' },
+      { name: 'White', code: '#FFFFFF' },
       { name: 'Gray', color: '#E5E7EB' },
       { name: 'pink', color: '#ffc0cb' },
     ],
@@ -80,7 +80,7 @@ const ProductItem = [
     image: { uri: 'https://cdn.shopify.com/s/files/1/0638/0811/0834/files/d5gRzCsHbr__web1_large.jpg?v=1738744167' },
     reviews: 18,
     colors: [
-      { name: 'White', color: '#FFFFFF' },
+      { name: 'White', code: '#FFFFFF' },
       { name: 'Gray', color: '#E5E7EB' },
       { name: 'pink', color: '#ffc0cb' },
     ],
@@ -104,7 +104,7 @@ const ProductItem = [
     },
     reviews: 18,
     colors: [
-      { name: 'White', color: '#FFFFFF' },
+      { name: 'White', code: '#FFFFFF' },
       { name: 'Gray', color: '#E5E7EB' },
       { name: 'pink', color: '#ffc0cb' },
     ],
@@ -128,7 +128,7 @@ const ProductItem = [
     },
     reviews: 18,
     colors: [
-      { name: 'White', color: '#FFFFFF' },
+      { name: 'White', code: '#FFFFFF' },
       { name: 'Gray', color: '#E5E7EB' },
       { name: 'pink', color: '#ffc0cb' },
     ],
@@ -150,7 +150,7 @@ const ProductItem = [
     image: { uri: 'https://cdn.shopify.com/s/files/1/0638/0811/0834/files/lk4Jf1Bkuy__1_large.jpg?v=1738578264' },
     reviews: 18,
     colors: [
-      { name: 'White', color: '#FFFFFF' },
+      { name: 'White', code: '#FFFFFF' },
       { name: 'Gray', color: '#E5E7EB' },
       { name: 'pink', color: '#ffc0cb' },
     ],
@@ -174,7 +174,7 @@ const ProductItem = [
     },
     reviews: 18,
     colors: [
-      { name: 'White', color: '#FFFFFF' },
+      { name: 'White', code: '#FFFFFF' },
       { name: 'Gray', color: '#E5E7EB' },
       { name: 'pink', color: '#ffc0cb' },
     ],
@@ -198,7 +198,7 @@ const ProductItem = [
     },
     reviews: 18,
     colors: [
-      { name: 'White', color: '#FFFFFF' },
+      { name: 'White', code: '#FFFFFF' },
       { name: 'Gray', color: '#E5E7EB' },
       { name: 'pink', color: '#ffc0cb' },
     ],
@@ -222,7 +222,7 @@ const ProductItem = [
     },
     reviews: 18,
     colors: [
-      { name: 'White', color: '#FFFFFF' },
+      { name: 'White', code: '#FFFFFF' },
       { name: 'Gray', color: '#E5E7EB' },
       { name: 'pink', color: '#ffc0cb' },
     ],
@@ -246,7 +246,7 @@ const ProductItem = [
     },
     reviews: 18,
     colors: [
-      { name: 'White', color: '#FFFFFF' },
+      { name: 'White', code: '#FFFFFF' },
       { name: 'Gray', color: '#E5E7EB' },
       { name: 'pink', color: '#ffc0cb' },
     ],
@@ -270,7 +270,7 @@ const ProductItem = [
     },
     reviews: 18,
     colors: [
-      { name: 'White', color: '#FFFFFF' },
+      { name: 'White', code: '#FFFFFF' },
       { name: 'Gray', color: '#E5E7EB' },
       { name: 'pink', color: '#ffc0cb' },
     ],
@@ -292,7 +292,7 @@ const ProductItem = [
     image: { uri: 'https://cdn.shopify.com/s/files/1/0638/0811/0834/files/W9jtRTriPA__w1_large.jpg?v=1738835640' },
     reviews: 18,
     colors: [
-      { name: 'White', color: '#FFFFFF' },
+      { name: 'White', code: '#FFFFFF' },
       { name: 'Gray', color: '#E5E7EB' },
       { name: 'pink', color: '#ffc0cb' },
     ],
@@ -316,7 +316,7 @@ const ProductItem = [
     },
     reviews: 18,
     colors: [
-      { name: 'White', color: '#FFFFFF' },
+      { name: 'White', code: '#FFFFFF' },
       { name: 'Gray', color: '#E5E7EB' },
       { name: 'pink', color: '#ffc0cb' },
     ],
@@ -338,7 +338,7 @@ const ProductItem = [
     image: { uri: 'https://cdn.shopify.com/s/files/1/0638/0811/0834/files/fTFZTd3EaD__web5-1_large.jpg?v=1733751636' },
     reviews: 18,
     colors: [
-      { name: 'White', color: '#FFFFFF' },
+      { name: 'White', code: '#FFFFFF' },
       { name: 'Gray', color: '#E5E7EB' },
       { name: 'pink', color: '#ffc0cb' },
     ],
@@ -362,7 +362,7 @@ const ProductItem = [
     },
     reviews: 18,
     colors: [
-      { name: 'White', color: '#FFFFFF' },
+      { name: 'White', code: '#FFFFFF' },
       { name: 'Gray', color: '#E5E7EB' },
       { name: 'pink', color: '#ffc0cb' },
     ],
@@ -384,7 +384,7 @@ const ProductItem = [
     image: { uri: 'https://cdn.shopify.com/s/files/1/0638/0811/0834/files/pGqLzdQ0IR__web1_large.jpg?v=1733387241' },
     reviews: 18,
     colors: [
-      { name: 'White', color: '#FFFFFF' },
+      { name: 'White', code: '#FFFFFF' },
       { name: 'Gray', color: '#E5E7EB' },
       { name: 'pink', color: '#ffc0cb' },
     ],
@@ -408,7 +408,7 @@ const ProductItem = [
     },
     reviews: 18,
     colors: [
-      { name: 'White', color: '#FFFFFF' },
+      { name: 'White', code: '#FFFFFF' },
       { name: 'Gray', color: '#E5E7EB' },
       { name: 'pink', color: '#ffc0cb' },
     ],
@@ -432,7 +432,7 @@ const ProductItem = [
     },
     reviews: 18,
     colors: [
-      { name: 'White', color: '#FFFFFF' },
+      { name: 'White', code: '#FFFFFF' },
       { name: 'Gray', color: '#E5E7EB' },
       { name: 'pink', color: '#ffc0cb' },
     ],
@@ -456,7 +456,7 @@ const ProductItem = [
     },
     reviews: 18,
     colors: [
-      { name: 'White', color: '#FFFFFF' },
+      { name: 'White', code: '#FFFFFF' },
       { name: 'Gray', color: '#E5E7EB' },
       { name: 'pink', color: '#ffc0cb' },
     ],

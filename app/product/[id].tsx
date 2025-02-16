@@ -38,7 +38,7 @@ const ProductDetail: FC = () => {
   const product = ProductItem.find((item) => item.id.toString() === id);
   const [quantity, setQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState(
-    typeof product?.colors?.[0] === 'object' ? product.colors[0].color : '',
+    typeof product?.colors?.[0] === 'object' ? product.colors[0].code : '',
   );
   const [selectedSize, setSelectedSize] = useState(
     typeof product?.sizes?.[0] === 'object' ? product.sizes[0].name : '',
@@ -160,20 +160,21 @@ const ProductDetail: FC = () => {
       {/* Chọn màu sắc */}
       <Text style={styles.optionTitle}>Select Color:</Text>
       <View style={styles.colorContainer}>
-        {product.colors?.map((color, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[
-              styles.colorOption,
-              selectedColor === (typeof color === 'object' ? color.name : color) && styles.selectedColor,
-            ]}
-            onPress={() => setSelectedColor(typeof color === 'object' ? color.name : color)}
-          >
-            <Text>{typeof color === 'object' ? color.name : color}</Text>
-          </TouchableOpacity>
-        ))}
+        {product.colors?.map((color, index) => {
+          const colorCode = typeof color === 'object' ? color.code : color; // Lấy mã màu
+          return (
+            <TouchableOpacity
+              key={index}
+              style={[
+                styles.colorOption,
+                { backgroundColor: colorCode }, // Áp dụng màu nền
+                selectedColor === (typeof color === 'object' ? color.name : color) && styles.selectedColor,
+              ]}
+              onPress={() => setSelectedColor(typeof color === 'object' ? color.name : color)}
+            />
+          );
+        })}
       </View>
-
       {/* Chọn kích thước */}
       <Text style={styles.optionTitle}>Select Size:</Text>
       <View style={styles.sizeContainer}>
@@ -238,18 +239,33 @@ const ProductDetail: FC = () => {
 };
 
 const styles = StyleSheet.create({
+  colorContainer: {
+    flexDirection: 'row',
+    marginVertical: 10,
+  },
+  colorOption: {
+    width: 30, // Kích thước vòng tròn màu
+    height: 30,
+    borderRadius: 15, // Làm tròn thành hình tròn
+    margin: 5,
+    borderWidth: 1,
+    borderColor: '#ccc', // Viền màu nhẹ
+  },
+  selectedColor: {
+    borderWidth: 2,
+    borderColor: 'blue', // Viền xanh khi chọn
+  },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   container: { padding: 16 },
   image: { width: '100%', height: 300 },
   title: { fontSize: 24, fontWeight: 'bold', marginBottom: 8 },
   price: { fontSize: 20, fontWeight: 'bold', color: 'green' },
-  colorContainer: { flexDirection: 'row', marginVertical: 10 },
+
   sizeContainer: { flexDirection: 'row', marginVertical: 10 },
   sizeOption: { borderRadius: 5, padding: 10, borderWidth: 1, margin: 5 },
   optionTitle: { fontSize: 18, fontWeight: 'bold', marginVertical: 10 },
   selectedSize: { backgroundColor: '#a8a8a8', borderColor: '#a8a8a8', borderWidth: 1 },
-  colorOption: { borderRadius: 20, padding: 10, borderWidth: 1, margin: 5 },
-  selectedColor: { backgroundColor: '#4F46E5', borderColor: 'blue', borderWidth: 2 },
+
   quantityContainer: { flexDirection: 'row', marginVertical: 10 },
   quantityButton: { padding: 10, borderWidth: 1 },
   quantityText: { fontSize: 18, marginHorizontal: 10 },
