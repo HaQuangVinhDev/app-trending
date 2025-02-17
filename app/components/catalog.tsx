@@ -1,4 +1,5 @@
-import { Gift } from 'lucide-react-native';
+import { router } from 'expo-router';
+
 import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 const { width } = Dimensions.get('window');
 const ITEM_SIZE = Math.floor((width - 32) / 2); // Trừ khoảng padding 16px x 2
@@ -39,7 +40,11 @@ export default function CategoryGrid() {
         numColumns={2} // Có thể chỉnh thành 3 nếu muốn
         keyExtractor={(item) => item.title}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.card} activeOpacity={0.7}>
+          <TouchableOpacity
+            style={styles.card}
+            activeOpacity={0.7}
+            onPress={() => router.push('/bestsellermain') as any}
+          >
             <Image source={item.image} style={styles.image} />
             <Text style={styles.title}>{item.title}</Text>
           </TouchableOpacity>

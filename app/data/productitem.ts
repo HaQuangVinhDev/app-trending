@@ -10,9 +10,11 @@ const ProductItem = [
     },
     reviews: 18,
     colors: [
-      { name: 'White', cde: '#FFFFFF' },
-      { name: 'Gray', code: '#E5E7EB' },
-      { name: 'pink', code: '#ff0606' },
+      { name: 'Red', cde: '#ea1111' },
+      { name: 'Gray', code: '#747274' },
+      { name: 'pink', code: '#9b959a' },
+      { name: 'green', code: '#11dd1f' },
+      { name: 'yellow', code: '#f5ff2b' },
     ],
     sizes: [
       { name: 'XXS', inStock: true },
@@ -433,8 +435,8 @@ const ProductItem = [
     reviews: 18,
     colors: [
       { name: 'White', code: '#FFFFFF' },
-      { name: 'Gray', color: '#E5E7EB' },
-      { name: 'pink', color: '#ffc0cb' },
+      { name: 'Gray', color: '#9b959a' },
+      { name: 'pink', color: '#ff6fde' },
     ],
     sizes: [
       { name: 'XXS', inStock: true },
