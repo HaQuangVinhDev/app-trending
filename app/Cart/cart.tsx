@@ -31,6 +31,15 @@ export default function Cart() {
 
     loadCart();
   }, []);
+  const clearCart = async () => {
+    try {
+      await AsyncStorage.removeItem('cart');
+      setCartItems([]); // Cập nhật state sau khi xóa dữ liệu
+      console.log('Giỏ hàng đã được xóa');
+    } catch (error) {
+      console.error('Lỗi khi xóa giỏ hàng:', error);
+    }
+  };
 
   const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
@@ -70,7 +79,15 @@ export default function Cart() {
             )}
           />
           <Text style={styles.totalText}>Total: ${total.toFixed(2)}</Text>
-          <Button title="Proceed to Checkout" onPress={handleCheckout} color="green" />
+          <View style={styles.padding}>
+            <View style={styles.bordercheck}>
+              <Button title="Proceed to Checkout" onPress={handleCheckout} color="green" />
+            </View>
+            <View style={styles.bordercheck}>
+              {' '}
+              <Button title="Clear Cart" onPress={clearCart} color="red" />
+            </View>
+          </View>
         </>
       )}
     </View>
@@ -84,4 +101,6 @@ const styles = StyleSheet.create({
   image: { width: 50, height: 50, marginRight: 10 },
   itemDetails: { flex: 1 },
   totalText: { fontSize: 18, fontWeight: 'bold', marginTop: 10, marginBottom: 10 },
+  bordercheck: { borderWidth: 1, borderColor: 'black' },
+  padding: { gap: 10 },
 });

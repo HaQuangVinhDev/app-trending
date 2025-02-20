@@ -24,7 +24,6 @@ const sections = [
   { id: '8', component: <Card /> },
   { id: '9', component: <OurBlog /> },
   { id: '10', component: <Question /> },
-
   { id: '11', component: <Footer /> },
 ];
 

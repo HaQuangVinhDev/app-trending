@@ -1,188 +1,148 @@
 import { useEffect, useState } from 'react';
-import GestureRecognizer from 'react-native-swipe-gestures';
+import { PanGestureHandler, State } from 'react-native-gesture-handler';
 import { Picker } from '@react-native-picker/picker';
 import { router } from 'expo-router';
 import { useCartCount } from '../Cart/useCartCount';
-import { Heart, ShoppingCart, User, Menu, Star, Gift, Truck, AlignVerticalJustifyStart } from 'lucide-react-native';
-import {
-  View,
-  Text,
-  Image,
-  TextInput,
-  StyleSheet,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  PanResponder,
-} from 'react-native';
+import { Heart, ShoppingCart, User, Menu, Star, Gift, Truck } from 'lucide-react-native';
+import { View, Text, Image, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 
 export default function Header() {
   const [isOpenMenu, setIsOpenMenu] = useState(false);
   const [selectedCurrency, setSelectedCurrency] = useState('USD');
   const cartCount = useCartCount();
-  // Hàm đóng menu
-  const dismissMenu = () => {
-    if (isOpenMenu) setIsOpenMenu(false);
-  };
-  const goBack = () => {
-    if (router.canGoBack()) {
-      router.back(); // Quay lại trang trước nếu có
-    } else {
-      router.push('/'); // Nếu không có trang trước, chuyển đến trang chủ
-    }
-  };
-  useEffect(() => {
-    // Xử lý sự kiện vuốt nếu cần
-    const swipeConfig = {
-      onSwipeRight: goBack, // Đổi sang gọi goBack
-      config: { velocityThreshold: 0.3, directionalOffsetThreshold: 80 },
-    };
-    // Kết nối GestureRecognizer với onSwipeRight
-    return () => {
-      // Cleanup nếu cần (không bắt buộc)
-    };
-  }, []);
-  // Xử lý vuốt để đóng menu
-  const panResponder = PanResponder.create({
-    onMoveShouldSetPanResponder: (_, gestureState) => {
-      return Math.abs(gestureState.dx) > 50;
-    },
-    onPanResponderRelease: (_, gestureState) => {
-      if (gestureState.dx < -50) {
-        dismissMenu();
-      }
-    },
-  });
+
   return (
-    <GestureRecognizer
-      onSwipeRight={goBack} // Vuốt phải để quay lại trang trước
-      config={{ velocityThreshold: 0.3, directionalOffsetThreshold: 80 }}
+    <PanGestureHandler
+      onHandlerStateChange={({ nativeEvent }) => {
+        if (nativeEvent.state === State.ACTIVE) {
+          setIsOpenMenu(false);
+        }
+      }}
     >
-      <TouchableWithoutFeedback onPress={dismissMenu} accessible={false}>
-        <View style={{ width: '100%' }} {...panResponder.panHandlers}>
-          {/* Announcement Bar */}
-          <View style={{ backgroundColor: '#f13c20', paddingVertical: 8, paddingHorizontal: 16 }}>
-            <Text style={{ color: 'white', textAlign: 'center', fontWeight: 'bold' }}>
-              🎉 Order 2+ items to SAVE 10% using code: TRC10
-            </Text>
+      <View style={{ width: '100%' }}>
+        {/* Announcement Bar */}
+        <View style={{ backgroundColor: '#f13c20', paddingVertical: 8, paddingHorizontal: 16 }}>
+          <Text style={{ color: 'white', textAlign: 'center', fontWeight: 'bold' }}>
+            🎉 Order 2+ items to SAVE 10% using code: TRC10
+          </Text>
+        </View>
+
+        {/* Main Header */}
+        <View style={styles.container}>
+          <View style={styles.header}>
+            {/* Menu Button */}
+            <TouchableOpacity onPress={() => setIsOpenMenu(!isOpenMenu)}>
+              <Menu size={28} color="#4A4A4A" />
+            </TouchableOpacity>
+            {/* Logo */}
+            <TouchableOpacity onPress={() => router.push('/')}>
+              <Image source={require('~/assets/images/logo.jpg')} style={styles.logo} />
+            </TouchableOpacity>
+
+            {/* Search Input */}
+            <TextInput style={styles.input} placeholder="Search..." placeholderTextColor="#888" />
           </View>
 
-          {/* Main Header */}
-          <View style={styles.container}>
-            <View style={styles.header}>
-              {/* Menu Button */}
-              <TouchableOpacity onPress={() => setIsOpenMenu(!isOpenMenu)}>
-                <Menu size={28} color="#4A4A4A" />
+          {/* Dropdown Menu */}
+          {isOpenMenu && (
+            <View style={styles.menu}>
+              <TouchableOpacity style={styles.menuItem}>
+                <Star size={20} color="#f13c20" />
+                <Text style={styles.menuText} onPress={() => router.push('/')}>
+                  Reviews
+                </Text>
               </TouchableOpacity>
-              {/* Logo */}
-              <TouchableOpacity onPress={() => router.push('/')}>
-                <Image source={require('~/assets/images/logo.jpg')} style={styles.logo} />
+              <TouchableOpacity style={styles.menuItem}>
+                <Gift size={20} color="#f13c20" />
+                <Text style={styles.menuText} onPress={() => router.push('/')}>
+                  Reward
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => router.push('/components/Bestseller/items/thumnail') as any}
+              >
+                <Truck size={20} color="#f13c20" />
+                <Text style={styles.menuText}>Track Order</Text>
               </TouchableOpacity>
 
-              {/* Search Input */}
-              <TextInput style={styles.input} placeholder="Search..." placeholderTextColor="#888" />
-            </View>
-
-            {/* Dropdown Menu */}
-            {isOpenMenu && (
-              <View style={styles.menu}>
-                <TouchableOpacity style={styles.menuItem}>
-                  <Star size={20} color="#f13c20" />
-                  <Text style={styles.menuText} onPress={() => router.push('/')}>
-                    Reviews
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.menuItem}>
-                  <Gift size={20} color="#f13c20" />
-                  <Text style={styles.menuText} onPress={() => router.push('/')}>
-                    Reward
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.menuItem}
-                  onPress={() => router.push('/components/Bestseller/items/thumnail') as any}
-                >
-                  <Truck size={20} color="#f13c20" />
-                  <Text style={styles.menuText}>Track Order</Text>
-                </TouchableOpacity>
-
-                {/* Currency Picker */}
-                <View style={styles.pickerContainer}>
-                  <Text style={styles.pickerLabel}>Select Currency:</Text>
-                  <View style={styles.pickerWrapper}>
-                    <Picker
-                      selectedValue={selectedCurrency}
-                      onValueChange={(itemValue) => setSelectedCurrency(itemValue)}
-                      mode="dropdown"
-                      style={styles.picker}
-                    >
-                      <Picker.Item label="USD" value="USD" />
-                      <Picker.Item label="EUR" value="EUR" />
-                      <Picker.Item label="VND" value="VND" />
-                      <Picker.Item label="JPY" value="JPY" />
-                    </Picker>
-                  </View>
-                </View>
-
-                {/* Icons */}
-                <View style={styles.iconContainer}>
-                  <TouchableOpacity>
-                    <Heart size={24} color="#4A4A4A" />
-                  </TouchableOpacity>
-                  <TouchableOpacity>
-                    <User size={24} color="#4A4A4A" />
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => router.push('/Cart/cart')} style={styles.cartContainer}>
-                    <ShoppingCart size={24} color="#4A4A4A" />
-                    {cartCount > 0 && (
-                      <View style={styles.cartBadge}>
-                        {' '}
-                        <Text style={styles.cartBadgeText}>{cartCount}</Text>
-                      </View>
-                    )}
-                  </TouchableOpacity>
-                </View>
-
-                {/* Navigation Links */}
-                <View>
-                  <TouchableOpacity onPress={() => router.push('/')}>
-                    <Text style={styles.navItemText}>Home</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => router.push('/bestsellermain')}>
-                    <Text style={styles.navItemText}>Best Sellers</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => router.push('/components/formcontent')}>
-                    <Text style={styles.navItemText}>New Arrivals</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity>
-                    <Text style={styles.navItemText}>Occasions</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity>
-                    <Text style={styles.navItemText}>Recipients</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity>
-                    <Text style={styles.navItemText}>Products</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity>
-                    <Text style={styles.navItemText}>Gift Cards</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity>
-                    <Text style={styles.navItemText}>🎁 Gift Finder</Text>
-                  </TouchableOpacity>
+              {/* Currency Picker */}
+              <View style={styles.pickerContainer}>
+                <Text style={styles.pickerLabel}>Select Currency:</Text>
+                <View style={styles.pickerWrapper}>
+                  <Picker
+                    selectedValue={selectedCurrency}
+                    onValueChange={(itemValue) => setSelectedCurrency(itemValue)}
+                    mode="dropdown"
+                    style={styles.picker}
+                  >
+                    <Picker.Item label="USD" value="USD" />
+                    <Picker.Item label="EUR" value="EUR" />
+                    <Picker.Item label="VND" value="VND" />
+                    <Picker.Item label="JPY" value="JPY" />
+                  </Picker>
                 </View>
               </View>
-            )}
 
-            {/* Trust Badge */}
-            <View style={styles.trustBadge}>
-              <Text style={styles.trustBadgeText}>
-                Trusted by more than <Text style={styles.boldText}>2 Million Customers</Text> and{' '}
-                <Text style={styles.boldText}>750K 5-Star Reviews</Text> ⭐⭐⭐⭐⭐
-              </Text>
+              {/* Icons */}
+              <View style={styles.iconContainer}>
+                <TouchableOpacity>
+                  <Heart size={24} color="#4A4A4A" />
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <User size={24} color="#4A4A4A" />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => router.push('/Cart/cart')} style={styles.cartContainer}>
+                  <ShoppingCart size={24} color="#4A4A4A" />
+                  {cartCount > 0 && (
+                    <View style={styles.cartBadge}>
+                      {' '}
+                      <Text style={styles.cartBadgeText}>{cartCount}</Text>
+                    </View>
+                  )}
+                </TouchableOpacity>
+              </View>
+
+              {/* Navigation Links */}
+              <View>
+                <TouchableOpacity onPress={() => router.push('/')}>
+                  <Text style={styles.navItemText}>Home</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => router.push('/bestsellermain')}>
+                  <Text style={styles.navItemText}>Best Sellers</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => router.push('/components/formcontent')}>
+                  <Text style={styles.navItemText}>New Arrivals</Text>
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <Text style={styles.navItemText}>Occasions</Text>
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <Text style={styles.navItemText}>Recipients</Text>
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <Text style={styles.navItemText}>Products</Text>
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <Text style={styles.navItemText}>Gift Cards</Text>
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <Text style={styles.navItemText}>🎁 Gift Finder</Text>
+                </TouchableOpacity>
+              </View>
             </View>
+          )}
+
+          {/* Trust Badge */}
+          <View style={styles.trustBadge}>
+            <Text style={styles.trustBadgeText}>
+              Trusted by more than <Text style={styles.boldText}>2 Million Customers</Text> and{' '}
+              <Text style={styles.boldText}>750K 5-Star Reviews</Text> ⭐⭐⭐⭐⭐
+            </Text>
           </View>
         </View>
-      </TouchableWithoutFeedback>
-    </GestureRecognizer>
+      </View>
+    </PanGestureHandler>
   );
 }
 

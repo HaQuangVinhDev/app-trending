@@ -58,8 +58,8 @@ const ProductDetail: FC = () => {
       image: product.image,
       price: parseFloat(product.price.replace(/[^0-9.]/g, '')),
       quantity,
-      color: selectedColor,
-      size: selectedSize,
+      color: typeof selectedColor === 'string' ? selectedColor : selectedColor.name,
+      size: typeof selectedSize === 'string' ? selectedSize : selectedSize.name,
     };
 
     let updatedCart = [...cartItems];
@@ -118,7 +118,7 @@ const ProductDetail: FC = () => {
               style={[styles.colorOption, selectedColor === color && styles.selectedColor]}
               onPress={() => setSelectedColor(color)}
             >
-              <Text style={styles.colorText}>{color}</Text>
+              <Text style={styles.colorText}>{color.name}</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -131,7 +131,7 @@ const ProductDetail: FC = () => {
               style={[styles.sizeOption, selectedSize === size && styles.selectedSize]}
               onPress={() => setSelectedSize(size)}
             >
-              <Text style={styles.sizeText}>{size}</Text>
+              <Text style={styles.sizeText}>{size.name}</Text>
             </TouchableOpacity>
           ))}
         </View>
