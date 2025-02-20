@@ -15,7 +15,12 @@ export default function BodyHeader() {
       setCurrentPage(pageNumber);
     }
   };
-
+  const getImageSource = (image: any) => {
+    if (typeof image === 'string') {
+      return { uri: image }; // Nếu là string, dùng uri (ảnh từ Internet)
+    }
+    return image; // Nếu không, dùng require (ảnh nội bộ)
+  };
   return (
     <View style={styles.container}>
       <FlatList
@@ -27,7 +32,7 @@ export default function BodyHeader() {
             style={styles.card}
             onPress={() => router.push({ pathname: '/product/[id]', params: { id: item.id.toString() } })}
           >
-            <Image source={{ uri: item.image }} style={styles.image} />
+            <Image source={getImageSource(item.image)} style={styles.image} />
             <Text style={styles.title}>{item.title}</Text>
             <Text style={styles.price}>
               {item.price} <Text style={styles.oldPrice}>{item.oldPrice}</Text>

@@ -8,28 +8,40 @@ export default function CategoryGrid() {
   const router = useRouter();
   const numColumns = Math.floor(width / 150);
 
-  const renderItem = ({ item }: { item: (typeof products)[0] }) => (
-    <TouchableOpacity
-      style={styles.productContainer}
-      activeOpacity={0.7}
-      onPress={() => router.push({ pathname: '/data/product', params: { id: item.id } })}
-    >
-      <View style={styles.imageContainer}>
-        <Image source={item.image} style={styles.productImage} />
-      </View>
-      <View style={styles.productInfo}>
-        <Text style={styles.productName}>{item.name}</Text>
-        <View style={styles.priceContainer}>
-          <Text style={styles.salePrice}>${item.price.toFixed(2)} USD</Text>
-          <Text style={styles.originalPrice}>${item.originalPrice.toFixed(2)} USD</Text>
+  const renderItem = ({ item }: { item: (typeof products)[0] }) => {
+    const fullStars = Math.floor(item.rating); // Số sao đầy đủ
+    const halfStar = item.rating % 1 !== 0; // Kiểm tra có nửa sao không
+    const emptyStars = 5 - fullStars - (halfStar ? 1 : 0); // Số sao rỗng
+
+    return (
+      <TouchableOpacity
+        style={styles.productContainer}
+        activeOpacity={0.7}
+        onPress={() => router.push({ pathname: '/bestseller/[id]', params: { id: item.id.toString() } })}
+      >
+        <View style={styles.imageContainer}>
+          <Image source={item.image} style={styles.productImage} />
         </View>
-        <View style={styles.ratingContainer}>
-          <Text style={styles.starRating}>{'★'.repeat(5)}</Text>
-          <Text style={styles.reviewCount}>({item.reviews})</Text>
+        <View style={styles.productInfo}>
+          <Text style={styles.productName} numberOfLines={1} ellipsizeMode="tail">
+            {item.name}
+          </Text>
+          <View style={styles.priceContainer}>
+            <Text style={styles.salePrice}>${item.price.toFixed(2)} USD</Text>
+            <Text style={styles.originalPrice}>${item.originalPrice.toFixed(2)} USD</Text>
+          </View>
+          <View style={styles.ratingContainer}>
+            <Text style={styles.starRating}>
+              {'★'.repeat(fullStars)}
+              {halfStar ? '⭑' : ''}
+              {'☆'.repeat(emptyStars)}
+            </Text>
+            <Text style={styles.reviewCount}>({item.reviews})</Text>
+          </View>
         </View>
-      </View>
-    </TouchableOpacity>
-  );
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <View style={styles.container}>

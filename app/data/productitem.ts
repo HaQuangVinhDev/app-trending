@@ -24,6 +24,21 @@ const ProductItem = [
       { name: 'L', inStock: true },
       { name: 'XL', inStock: false },
     ],
+    thumbnails: [
+      require('~/assets/images/imagenew/item1.png'),
+      require('~/assets/images/imagenew/item2.png'),
+      require('~/assets/images/imagenew/item3.png'),
+      require('~/assets/images/imagenew/item4.png'),
+      require('~/assets/images/imagenew/item5.png'),
+      require('~/assets/images/imagenew/item6.png'),
+    ],
+    content: `Customizable Details: Personalize it with your names and appearances.
+
+              Celebrate Your Memories: A constant reminder of your unforgettable moments together.
+
+             2-Layer Design: Features a raised character part for a captivating 3D effect, making your couple truly stand out.
+
+              Elegant Decor: A stunning piece that adds charm to any table or desk.`,
   },
   {
     id: 2,
@@ -48,6 +63,7 @@ const ProductItem = [
       { name: 'L', inStock: true },
       { name: 'XL', inStock: false },
     ],
+    thumbnails: [],
   },
   {
     id: 3,
@@ -72,6 +88,7 @@ const ProductItem = [
       { name: 'L', inStock: true },
       { name: 'XL', inStock: false },
     ],
+    thumbnails: [],
   },
   {
     id: 4,
@@ -94,6 +111,7 @@ const ProductItem = [
       { name: 'L', inStock: true },
       { name: 'XL', inStock: false },
     ],
+    thumbnails: [],
   },
   {
     id: 5,
@@ -118,6 +136,7 @@ const ProductItem = [
       { name: 'L', inStock: true },
       { name: 'XL', inStock: false },
     ],
+    thumbnails: [],
   },
   {
     id: 6,
@@ -142,6 +161,7 @@ const ProductItem = [
       { name: 'L', inStock: true },
       { name: 'XL', inStock: false },
     ],
+    thumbnails: [],
   },
   {
     id: 7,
@@ -164,6 +184,7 @@ const ProductItem = [
       { name: 'L', inStock: true },
       { name: 'XL', inStock: false },
     ],
+    thumbnails: [],
   },
   {
     id: 8,
@@ -188,6 +209,7 @@ const ProductItem = [
       { name: 'L', inStock: true },
       { name: 'XL', inStock: false },
     ],
+    thumbnails: [],
   },
   {
     id: 9,
@@ -212,6 +234,7 @@ const ProductItem = [
       { name: 'L', inStock: true },
       { name: 'XL', inStock: false },
     ],
+    thumbnails: [],
   },
   {
     id: 10,
@@ -236,6 +259,7 @@ const ProductItem = [
       { name: 'L', inStock: true },
       { name: 'XL', inStock: false },
     ],
+    thumbnails: [],
   },
   {
     id: 11,
@@ -260,6 +284,7 @@ const ProductItem = [
       { name: 'L', inStock: true },
       { name: 'XL', inStock: false },
     ],
+    thumbnails: [],
   },
   {
     id: 12,
@@ -284,6 +309,7 @@ const ProductItem = [
       { name: 'L', inStock: true },
       { name: 'XL', inStock: false },
     ],
+    thumbnails: [],
   },
   {
     id: 13,
@@ -306,6 +332,7 @@ const ProductItem = [
       { name: 'L', inStock: true },
       { name: 'XL', inStock: false },
     ],
+    thumbnails: [],
   },
   {
     id: 14,
@@ -330,6 +357,7 @@ const ProductItem = [
       { name: 'L', inStock: true },
       { name: 'XL', inStock: false },
     ],
+    thumbnails: [],
   },
   {
     id: 15,
@@ -352,6 +380,7 @@ const ProductItem = [
       { name: 'L', inStock: true },
       { name: 'XL', inStock: false },
     ],
+    thumbnails: [],
   },
   {
     id: 16,
@@ -376,6 +405,7 @@ const ProductItem = [
       { name: 'L', inStock: true },
       { name: 'XL', inStock: false },
     ],
+    thumbnails: [],
   },
   {
     id: 17,
@@ -398,6 +428,7 @@ const ProductItem = [
       { name: 'L', inStock: true },
       { name: 'XL', inStock: false },
     ],
+    thumbnails: [],
   },
   {
     id: 18,
@@ -422,6 +453,7 @@ const ProductItem = [
       { name: 'L', inStock: true },
       { name: 'XL', inStock: false },
     ],
+    thumbnails: [],
   },
   {
     id: 19,
@@ -446,6 +478,7 @@ const ProductItem = [
       { name: 'L', inStock: true },
       { name: 'XL', inStock: false },
     ],
+    thumbnails: [],
   },
   {
     id: 20,
@@ -470,6 +503,89 @@ const ProductItem = [
       { name: 'L', inStock: true },
       { name: 'XL', inStock: false },
     ],
+    thumbnails: [],
+  },
+  {
+    id: 21,
+    name: 'GROWING OLD TOGETHER',
+    title:
+      '3D Effect Eternal Love Couple Growing Old Together Personalized Standing Wooden Plaque, Heartfelt Gift For Couple, For Him, For Her, Husband, Wife',
+    price: '$17.99 USD',
+    oldPrice: '$27.99 USD',
+    image: {
+      uri: 'https://assets.customall.io/3c652c223e657d65757775726a777568751e011d342c300a030c18183022256a76692d3720656b65302e23332f657d767777776b6532292e33657d65373f656b6530222537657d333532226b6533352e2a657d65653a.png',
+    },
+    reviews: 18,
+    colors: [
+      { name: 'White', code: '#FFFFFF' },
+      { name: 'Gray', color: '#E5E7EB' },
+      { name: 'pink', color: '#ffc0cb' },
+    ],
+    sizes: [
+      { name: 'XXS', inStock: true },
+      { name: 'XS', inStock: true },
+      { name: 'S', inStock: true },
+      { name: 'M', inStock: true },
+      { name: 'L', inStock: true },
+      { name: 'XL', inStock: false },
+    ],
+    thumbnails: [],
+    content: `💞 A Beautiful Tribute to Your Timeless Love 💞
+
+        Celebrate the journey of love and togetherness with this heartfelt 3D Effect Old Couple Sitting Together Personalized Standing Wooden Plaque, designed to honor the milestones you and your partner have shared. Featuring a touching design of an old couple sitting side by side, it’s more than a decoration—it’s a tribute to a love story that has stood the test of time.
+
+          ✨ Why This Keepsake is Perfect for You:
+
+            🖼️ Crafted with Care: Made from premium wood, this elegant standing plaque brings warmth and meaning to any space.
+          ❤️ A Personal Touch: Customize with your names, a touch of your appearances and anniversary year, turning it into a one-of-a-kind celebration of your love.
+          🌟 A Symbol of Devotion: The tender design reflects the depth and beauty of a bond that only grows stronger with time.
+          🎁 A Thoughtful Gift: Perfect for anniversaries, Christmas, or simply to remind your partner how cherished they are.
+            This keepsake isn’t just a gift—it’s a testament to the love and memories you’ve built together. Order now to create a treasure that will fill your hearts with joy every time you see it. ❤️
+
+      Product details:
+
+      Material: Plywood
+      Size: Available in 3 sizes options: 5.5”/14cm, 8”/20.3cm and 10”/25.4cm (depict the longest dimension including the base, please allow up to 1” difference). 
+      Please note that for custom-shaped designs, the actual dimensions of the product you receive may be slightly different from the default sizes. This is due to the nature of custom-shaped designs, which depend on the personalized options you choose.
+      Thickness: 0.17 in / 0.45 cm
+      Packaging: 1 x 1-Layer Wooden plaque + 1 x Wooden display base
+      1-sided printing in modern technology, durable, and vivid color.  
+      Actual color may be slightly different from the image due to different monitor and light effects.
+      Please allow 1” differences due to manual measurement.
+      Capture the essence of your most treasured moments with our Personalized Standing Wooden Plaque. Order yours today and let your memories take center stage in an artful display of love and meaning.`,
+  },
+  {
+    id: 22,
+    name: 'Tab Moon',
+    title: 'Y2K Couple Frame Personalized 2-layer Wooden Plaque,  Gift for Him, Gift for Her',
+    price: '$17.99 USD',
+    oldPrice: '$27.99 USD',
+    image: require('~/assets/images/imagenew/tabmoon.png'),
+    reviews: 18,
+    colors: [
+      { name: 'White', code: '#FFFFFF' },
+      { name: 'Gray', color: '#E5E7EB' },
+      { name: 'pink', color: '#ffc0cb' },
+    ],
+    sizes: [
+      { name: 'XXS', inStock: true },
+      { name: 'XS', inStock: true },
+      { name: 'S', inStock: true },
+      { name: 'M', inStock: true },
+      { name: 'L', inStock: true },
+      { name: 'XL', inStock: false },
+    ],
+    thumbnails: [
+      require('~/assets/images/imagenew/tabmoon1.png'),
+      require('~/assets/images/imagenew/tabmoon2.png'),
+      require('~/assets/images/imagenew/tabmoon3.png'),
+      require('~/assets/images/imagenew/tabmoon4.png'),
+      require('~/assets/images/imagenew/tabmoon5.png'),
+      require('~/assets/images/imagenew/tabmoon6.png'),
+      require('~/assets/images/imagenew/tabmoon7.png'),
+      require('~/assets/images/imagenew/tabmoon8.png'),
+    ],
+    content: ``,
   },
 ];
 

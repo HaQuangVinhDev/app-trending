@@ -1,5 +1,5 @@
 import { FC, useState, useEffect } from 'react';
-import { SvgUri } from 'react-native-svg';
+import { Svg, Path } from 'react-native-svg';
 import {
   View,
   Text,
@@ -99,7 +99,15 @@ const ProductDetail: FC = () => {
       reviews: 8,
     },
   ];
+  //xử lý imageMain
+  const getImageSource = (image: any) => {
+    if (typeof image === 'string') {
+      return { uri: image }; // Nếu là string, dùng uri (ảnh từ Internet)
+    }
+    return image; // Nếu không, dùng require (ảnh nội bộ)
+  };
 
+  const [currentImage, setCurrentImage] = useState(getImageSource(product?.image));
   // Load đánh giá từ AsyncStorage
   useEffect(() => {
     const loadReviews = async () => {
@@ -162,7 +170,7 @@ const ProductDetail: FC = () => {
       Alert.alert('Error', `Size ${selectedSize} out of stock!`);
       return;
     }
-
+    //
     const newItem: CartItem = {
       productId: product.id.toString(),
       title: product.title,
@@ -202,13 +210,56 @@ const ProductDetail: FC = () => {
       </View>
     );
   }
-
+  const Star = ({ filled }: { filled: boolean }) => (
+    <Svg
+      width={16}
+      height={16}
+      viewBox="0 0 24 24"
+      fill={filled ? '#FFD700' : 'none'}
+      stroke="#FFD700"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <Path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+    </Svg>
+  );
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Header />
-      <Image source={product.image} style={styles.image} />
-      <Text style={styles.title}>{product.title}</Text>
-      <Text style={styles.price}>${parseFloat(product.price.replace(/[^0-9.]/g, '')).toFixed(2)}</Text>
+      <View style={styles.imageMain}>
+        {currentImage ? (
+          <Image source={currentImage} style={styles.imageheader} />
+        ) : (
+          <Text style={{ textAlign: 'center', fontSize: 16 }}>No Image Available</Text>
+        )}
+        {/* Danh sách ảnh con (tạm thời dùng ảnh chính nếu không có danh sách ảnh con) */}
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.thumbnailContainer}>
+          {[product.image, ...(product?.thumbnails || [])].map((thumb, index) => (
+            <TouchableOpacity key={index} onPress={() => setCurrentImage(getImageSource(thumb))}>
+              <Image
+                source={getImageSource(thumb)}
+                style={[styles.thumbnail, currentImage === getImageSource(thumb) && styles.selectedThumbnail]}
+              />
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+        <View style={styles.productInfo}>
+          <Text style={styles.productName}>{product?.name || 'No Name Available'}</Text>
+          <Text style={styles.productTitle}>{product?.title || 'No Title Available'}</Text>
+          <Text style={styles.price}>Price: {product?.price || 'N/A'}</Text>
+        </View>
+        <View style={styles.ratingContainer}>
+          {[...Array(5)].map((_, i) => (
+            <Star key={i} filled={i < 4} />
+          ))}
+          <Text style={styles.reviewText}>746 reviews</Text>
+        </View>
+        <View style={styles.contentContainer}>
+          <Text style={styles.contentTitle}>Product Description</Text>
+          <Text style={styles.contentText}>{product?.content || 'No content available for this product.'}</Text>
+        </View>
+      </View>
 
       {/* Chọn màu sắc */}
       <Text style={styles.optionTitle}>Select Color:</Text>
@@ -260,13 +311,14 @@ const ProductDetail: FC = () => {
       <TouchableOpacity onPress={addToCart} style={styles.addToCartButton}>
         <Text style={styles.addToCartText}>Add to cart</Text>
       </TouchableOpacity>
+      {/* Danh sách cơ sở */}
       <View style={styles.moreItemsContainer}>
         <Text style={styles.moreItemsTitle}>More Items</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {moreItems.map((item) => (
             <TouchableOpacity key={item.id} style={styles.productContainer}>
               <View style={styles.imageContainer}>
-                <Image source={item.image} style={styles.productImage} resizeMode="contain" />
+                <Image source={item.image} style={styles.productImage} resizeMode="cover" />
               </View>
               <View style={styles.productInfo}>
                 <Text style={styles.productName}>{item.name}</Text>
@@ -333,6 +385,7 @@ const ProductDetail: FC = () => {
 };
 
 const styles = StyleSheet.create({
+  imageMain: { alignItems: 'center', width: '100%' },
   colorContainer: {
     flexDirection: 'row',
     marginVertical: 10,
@@ -354,6 +407,7 @@ const styles = StyleSheet.create({
   image: { width: '100%', height: 300 },
   title: { fontSize: 24, fontWeight: 'bold', marginBottom: 8 },
   price: { fontSize: 20, fontWeight: 'bold', color: 'green' },
+  productTitle: { fontSize: 18, fontWeight: 'bold', marginVertical: 10 },
 
   sizeContainer: { flexDirection: 'row', marginVertical: 10 },
   sizeOption: { borderRadius: 5, padding: 10, borderWidth: 1, margin: 5 },
@@ -369,6 +423,7 @@ const styles = StyleSheet.create({
 
     padding: 8,
   },
+  reviewText: { fontSize: 12, color: '#4A5568', marginLeft: 4 },
   quantityButtonText: { fontSize: 18, fontWeight: 'bold' },
   addToCartButton: { backgroundColor: 'blue', padding: 10, alignItems: 'center' },
   addToCartText: { color: 'white', fontSize: 18 },
@@ -394,7 +449,7 @@ const styles = StyleSheet.create({
   },
   imageContainer: { width: 100, height: 100, borderRadius: 10, overflow: 'hidden' },
   productImage: { width: '100%', height: '100%' },
-  productInfo: { paddingLeft: 10, width: 120, justifyContent: 'center' },
+  productInfo: { alignItems: 'center', marginTop: 20 },
   productName: { fontSize: 14, fontWeight: 'bold', marginBottom: 5 },
   priceContainer: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 5, flexWrap: 'wrap' },
   salePrice: { fontSize: 14, fontWeight: 'bold', color: 'green', flexShrink: 1 },
@@ -402,6 +457,24 @@ const styles = StyleSheet.create({
 
   starRating: { fontSize: 14, color: 'gold' },
   reviewCount: { fontSize: 12, color: '#666', marginLeft: 5, marginTop: 2 },
+  contentContainer: {
+    marginTop: 20,
+    paddingHorizontal: 16,
+  },
+  contentTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  contentText: {
+    fontSize: 16,
+    lineHeight: 24,
+    color: '#333',
+  },
+  imageheader: { width: 320, height: 320, resizeMode: 'contain', borderRadius: 10, marginBottom: 10 },
+  thumbnailContainer: { flexDirection: 'row', marginTop: 10 },
+  thumbnail: { width: 60, height: 60, marginHorizontal: 5, borderRadius: 5, borderWidth: 1, borderColor: '#ccc' },
+  selectedThumbnail: { borderWidth: 1 },
 });
 
 export default ProductDetail;
