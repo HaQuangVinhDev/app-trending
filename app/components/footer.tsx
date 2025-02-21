@@ -71,12 +71,7 @@ export default function Footer() {
 
       <View style={styles.bottomSection}>
         <View style={styles.trustSection}>
-          <Image
-            source={{
-              uri: 'https://images.dmca.com/Badges/_dmca_premi_badge_4.png?ID=6215c2ff-22c6-4a51-ac3d-f4ff89588f3c',
-            }}
-            style={styles.dmcaIcon}
-          />
+          <Image source={require('~/assets/images/_dmca_premi_badge_4.png')} style={styles.dmcaIcon} />
           <TouchableOpacity style={styles.trustButton} onPress={() => Linking.openURL('/')}>
             <Text style={styles.trustButtonText}>Review us on Trustpilot</Text>
           </TouchableOpacity>

@@ -542,9 +542,7 @@ What are you waiting for? Let’s create your own personalized car ornament and 
       '3D Effect Eternal Love Couple Growing Old Together Personalized Standing Wooden Plaque, Heartfelt Gift For Couple, For Him, For Her, Husband, Wife',
     price: '$17.99 USD',
     oldPrice: '$27.99 USD',
-    image: {
-      uri: 'https://assets.customall.io/3c652c223e657d65757775726a777568751e011d342c300a030c18183022256a76692d3720656b65302e23332f657d767777776b6532292e33657d65373f656b6530222537657d333532226b6533352e2a657d65653a.png',
-    },
+    image: require('~/assets/images/couple.webp'),
     reviews: 18,
     colors: [
       { name: 'White', code: '#FFFFFF' },
@@ -615,7 +613,36 @@ What are you waiting for? Let’s create your own personalized car ornament and 
       require('~/assets/images/imagenew/tabmoon7.png'),
       require('~/assets/images/imagenew/tabmoon8.png'),
     ],
-    content: ``,
+    content: `🌙 A Love Written in the Stars – Personalized Moon Phase Poster ✨
+
+Every love story is unique—just like the moon that shone on your most unforgettable night. This Personalized Moon Phase Poster captures the exact phase of the moon from your special date, transforming a meaningful moment into a breathtaking cosmic masterpiece.
+
+How The QR Code Works? Simply scan the code with your phone and your favorite song will play.
+
+
+💫 Why You’ll Love It:
+
+🌕 Your Love, Your Moon: Simply enter your special date, and we’ll generate the moon phase from that night—100% unique to your love story.
+💖 Completely Personal: Customize with names, quotes, and stunning backgrounds to create a truly one-of-a-kind keepsake.
+🎁 A Cosmic Connection: The moon symbolizes mystery, destiny, and eternal love—this poster brings that magic into your home.
+✨ The Ultimate Anniversary Gift: Perfect for couples celebrating milestones, weddings, or anniversaries. A heartfelt gift from partners, family, or friends to honor love’s journey.
+Make your love story shine with a gift as special as the night it all began. Order now and let the universe tell your love story! 🌌💞
+
+Product details:
+
+Frame NOT included. Photos with frames are for display purposes only.
+Shipped rolled up in a tube.
+High quality resin-coated photo paper.
+Paper weight 260 GSM.
+Paper thickness 10 mil. which provides a durable photo feel.
+Print can last up to 200 years (color) and 400 years (black-and-white).
+Printed in the USA.
+Personalization:
+
+Please fill in the required fields and carefully double-check the spelling
+To ensure the best looking, please use standard English only and exclude special characters
+The last step, click “Preview Your Personalization” to get a glimpse of the wonderful creation you’ve made
+Let’s create your own poster and click “Add To Cart” NOW to get one!`,
   },
 ];
 

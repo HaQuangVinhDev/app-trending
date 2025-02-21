@@ -5,26 +5,22 @@ const categories = [
   {
     id: '1',
     name: 'Music Fridge Magnet',
-    image:
-      'https://trendingcustom.com/cdn/shop/files/3c652c223e657d65757775736a7675683e2a292c153233302915181833352476757775737675757076717e72183022256a76692d3720656b65302e23332f657d767777776b6532292e33657d65373f656b6530222537657d3335322_400x.webp?v=1737437249',
+    image: require('~/assets/images/paren.png'),
   },
   {
     id: '2',
     name: 'Wooden Plaque',
-    image:
-      'https://trendingcustom.com/cdn/shop/files/3c652c223e657d65757775736a7776683d25127708702f300d3d1818757377767674777176767f183022256a75692d3720656b65302e23332f657d767777776b6532292e33657d65373f656b6530222537657d333532226b6533352_400x.webp?v=1737437367',
+    image: require('~/assets/images/wood.png'),
   },
   {
     id: '3',
     name: 'LED Night Light',
-    image:
-      'https://trendingcustom.com/cdn/shop/files/image-2_a07b00ee-57ca-4c35-a52b-e304948d7eab_400x.png?v=1736498998',
+    image: require('~/assets/images/led.png'),
   },
   {
     id: '4',
     name: 'Post',
-    image:
-      'https://trendingcustom.com/cdn/shop/files/3c652c223e657d65757775736a777168050a280034150305023618187573777577717270777672183022256a73692d3720656b65302e23332f657d767777776b6532292e33657d65373f656b6530222537657d333532226b6533352_400x.webp?v=1737437563',
+    image: require('~/assets/images/hand.png'),
   },
 ];
 
@@ -46,7 +42,7 @@ export default function Shopbycategory() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <TouchableOpacity style={styles.card} activeOpacity={0.7}>
-            <Image source={{ uri: item.image }} style={styles.image} />
+            <Image source={item.image} style={styles.image} />
             <Text style={styles.title}>{item.name}</Text>
           </TouchableOpacity>
         )}

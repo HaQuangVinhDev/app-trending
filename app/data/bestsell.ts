@@ -176,8 +176,7 @@ export const items = [
       '3D Effect Eternal Love Couple Growing Old Together Personalized Standing Wooden Plaque, Heartfelt Gift For Couple, For Him, For Her, Husband, Wife',
     price: '$17.99 USD',
     oldPrice: '$27.99 USD',
-    image:
-      'https://assets.customall.io/3c652c223e657d65757775726a777568751e011d342c300a030c18183022256a76692d3720656b65302e23332f657d767777776b6532292e33657d65373f656b6530222537657d333532226b6533352e2a657d65653a.png',
+    image: require('~/assets/images/couple.webp'),
     reviews: 18,
   },
   {

@@ -1,50 +1,59 @@
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, FlatList, Dimensions } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  FlatList,
+  Dimensions,
+  ImageSourcePropType,
+} from 'react-native';
 
 const { width: screenWidth } = Dimensions.get('window');
 
 interface Product {
   id: number;
   name: string;
-  image: string;
+  image: ImageSourcePropType;
 }
 
 const products: Product[] = [
   {
     id: 1,
     name: 'Our Moon Couple Gift Moon',
-    image: 'https://trendingcustom.com/cdn/shop/files/BWCix-K0p_mid_200x.png?v=1732518020',
+    image: require('~/assets/images/couplechair.png'),
   },
   {
     id: 2,
     name: 'Family Heart Tree Sitting',
-    image: 'https://trendingcustom.com/cdn/shop/files/2_4704a7b3-6912-4c44-843c-7af2b85d3350_200x.png?v=1732518082',
+    image: require('~/assets/images/cake.png'),
   },
   {
     id: 3,
     name: 'Our Moon Couple Gift Moon',
-    image: 'https://trendingcustom.com/cdn/shop/files/6_e17493d0-dc5e-42af-882b-16319f76fe59_200x.png?v=1732518147',
+    image: require('~/assets/images/moon.png'),
   },
   {
     id: 4,
     name: 'Starry Night Couple Custom',
-    image: 'https://trendingcustom.com/cdn/shop/files/Group_34894_200x.png?v=1728357839',
+    image: require('~/assets/images/tivi.png'),
   },
   {
     id: 5,
     name: 'Always With You Cardinal',
-    image: 'https://trendingcustom.com/cdn/shop/files/Group_34895_200x.png?v=1728357839',
+    image: require('~/assets/images/cup.png'),
   },
   {
     id: 6,
     name: 'Couple Custom Moon Phase',
-    image: 'https://trendingcustom.com/cdn/shop/files/Group_34896_200x.png?v=1728357839',
+    image: require('~/assets/images/char.png'),
   },
 ];
 
 const renderItem = ({ item }: { item: Product }) => (
   <View style={styles.card}>
-    <Image source={{ uri: item.image }} style={styles.image} />
+    <Image source={item.image} style={styles.image} />
     <Text style={styles.productName}>{item.name}</Text>
   </View>
 );
