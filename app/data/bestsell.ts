@@ -34,11 +34,11 @@ export const items = [
   },
   {
     id: 5,
-    title: 'Y2K Couple Frame Personalized 2-layer Wooden Plaque,  Gift for Him, Gift for Her',
-    price: '$17.99 USD',
-    oldPrice: '$27.99 USD',
-    image:
-      'https://cdn.shopify.com/s/files/1/0638/0811/0834/files/FOkRBezndv__trc22024120603048_web1_large.jpg?v=1738834940',
+    title:
+      "3D Effect Cute Cartoon Couple Walking Personalized Car Ornament, Perfect Valentine'Day Gift for him, Gift for her",
+    price: '$19.99 USD',
+    oldPrice: '$29.99 USD',
+    image: require('~/assets/images/couple/couple.png'),
     reviews: 18,
   },
   {
@@ -69,11 +69,11 @@ export const items = [
   },
   {
     id: 9,
-    title: 'Y2K Couple Frame Personalized 2-layer Wooden Plaque,  Gift for Him, Gift for Her',
-    price: '$17.99 USD',
-    oldPrice: '$27.99 USD',
-    image:
-      'https://cdn.shopify.com/s/files/1/0638/0811/0834/files/XMHPj7DBFg__trc22024121603162_web-1_large.jpg?v=1737455415',
+    title:
+      '3D Effect Cute Cartoon Couple Holding Hands Personalized Acrylic Car Hanger, Anniversary & Gift for him, Gift for her',
+    price: '$19.99 USD',
+    oldPrice: '$29.99 USD',
+    image: require('~/assets/images/couple/couple7.png'),
     reviews: 18,
   },
   {
@@ -96,11 +96,10 @@ export const items = [
   },
   {
     id: 12,
-    title: 'Y2K Couple Frame Personalized 2-layer Wooden Plaque,  Gift for Him, Gift for Her',
-    price: '$17.99 USD',
-    oldPrice: '$27.99 USD',
-    image:
-      'https://cdn.shopify.com/s/files/1/0638/0811/0834/files/ih44OdP1SS__web2_83b7536d-aabc-4cf8-ae42-84908d17e1be_large.jpg?v=1720178452',
+    title: "Custom Face Photo Personalized Beer Glass, Funny Gift For Dad, Unique Father's Day Gift",
+    price: '$26.66 USD',
+    oldPrice: '$36.99 USD',
+    image: require('~/assets/images/imagenew/Beer8.png'),
     reviews: 18,
   },
   {

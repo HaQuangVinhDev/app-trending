@@ -15,8 +15,8 @@ import FormContent from './components/formcontent';
 
 const sections = [
   { id: '1', component: <Catalog /> },
-  { id: '2', component: <Bestseller /> },
   { id: '3', component: <Banner /> },
+  { id: '2', component: <Bestseller /> },
   { id: '4', component: <Ban /> },
   { id: '5', component: <Picture /> },
   { id: '6', component: <Gifts /> },

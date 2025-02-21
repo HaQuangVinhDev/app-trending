@@ -10,6 +10,7 @@ import {
   StyleSheet,
   Alert,
   ToastAndroid,
+  Modal,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useLocalSearchParams } from 'expo-router';
@@ -17,6 +18,7 @@ import ProductItem from '../data/productitem';
 import Header from '../components/header';
 import Question from '../components/quesion';
 import Footer from '../components/footer';
+import { Picker } from '@react-native-picker/picker';
 
 interface CartItem {
   productId: string;
@@ -46,6 +48,7 @@ const ProductDetail: FC = () => {
   const [selectedSize, setSelectedSize] = useState(
     typeof product?.sizes?.[0] === 'object' ? product.sizes[0].name : '',
   );
+
   const [reviews, setReviews] = useState<Review[]>([]);
   const [newReview, setNewReview] = useState('');
   const [rating, setRating] = useState(5);
@@ -245,7 +248,6 @@ const ProductDetail: FC = () => {
           ))}
         </ScrollView>
         <View style={styles.productInfo}>
-          <Text style={styles.productName}>{product?.name || 'No Name Available'}</Text>
           <Text style={styles.productTitle}>{product?.title || 'No Title Available'}</Text>
           <Text style={styles.price}>Price: {product?.price || 'N/A'}</Text>
         </View>
@@ -291,7 +293,7 @@ const ProductDetail: FC = () => {
             ]}
             onPress={() => setSelectedSize(typeof size === 'object' ? size.name : '')}
           >
-            <Text>{typeof size === 'object' ? size.name : size}</Text>
+            <Text style={styles.colortext}>{typeof size === 'object' ? size.name : size}</Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -311,6 +313,15 @@ const ProductDetail: FC = () => {
       <TouchableOpacity onPress={addToCart} style={styles.addToCartButton}>
         <Text style={styles.addToCartText}>Add to cart</Text>
       </TouchableOpacity>
+
+      {/* thêm tên sản phẩm */}
+      <View style={styles.inputContainer}>
+        <Text>Woman's Name</Text>
+        <TextInput style={styles.input} placeholder="Types here" />
+
+        <Text>Man's Name</Text>
+        <TextInput style={styles.input} placeholder="Types here" />
+      </View>
       {/* Danh sách cơ sở */}
       <View style={styles.moreItemsContainer}>
         <Text style={styles.moreItemsTitle}>More Items</Text>
@@ -400,7 +411,11 @@ const styles = StyleSheet.create({
   },
   selectedColor: {
     borderWidth: 2,
-    borderColor: 'blue', // Viền xanh khi chọn
+    borderColor: 'blue',
+    // Viền xanh khi chọn
+  },
+  colortext: {
+    color: 'fff',
   },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   container: { padding: 16 },
@@ -409,24 +424,25 @@ const styles = StyleSheet.create({
   price: { fontSize: 20, fontWeight: 'bold', color: 'green' },
   productTitle: { fontSize: 18, fontWeight: 'bold', marginVertical: 10 },
 
+  // size
   sizeContainer: { flexDirection: 'row', marginVertical: 10 },
   sizeOption: { borderRadius: 5, padding: 10, borderWidth: 1, margin: 5 },
   optionTitle: { fontSize: 18, fontWeight: 'bold', marginVertical: 10 },
-  selectedSize: { backgroundColor: '#a8a8a8', borderColor: '#a8a8a8', borderWidth: 1 },
-
+  selectedSize: { backgroundColor: '#464ef8', borderColor: '#464ef8', borderWidth: 1 },
   quantityContainer: { flexDirection: 'row', marginVertical: 10, alignItems: 'center' },
   quantityButton: { padding: 10, borderWidth: 1, backgroundColor: '#f9f9f9', borderRadius: 5 },
   quantityText: {
     fontSize: 18,
-
     marginHorizontal: 10,
-
     padding: 8,
   },
-  reviewText: { fontSize: 12, color: '#4A5568', marginLeft: 4 },
-  quantityButtonText: { fontSize: 18, fontWeight: 'bold' },
+
+  // add to cart
   addToCartButton: { backgroundColor: 'blue', padding: 10, alignItems: 'center' },
   addToCartText: { color: 'white', fontSize: 18 },
+  // review
+  reviewText: { fontSize: 12, color: '#4A5568', marginLeft: 4 },
+  quantityButtonText: { fontSize: 18, fontWeight: 'bold' },
   reviewSection: { marginTop: 20, marginBottom: 20 },
   reviewTitle: { fontSize: 20, fontWeight: 'bold' },
   reviewItem: { borderBottomWidth: 1, paddingVertical: 8, marginBottom: 10 },
@@ -449,7 +465,7 @@ const styles = StyleSheet.create({
   },
   imageContainer: { width: 100, height: 100, borderRadius: 10, overflow: 'hidden' },
   productImage: { width: '100%', height: '100%' },
-  productInfo: { alignItems: 'center', marginTop: 20 },
+  productInfo: { paddingHorizontal: 10, marginTop: 20 },
   productName: { fontSize: 14, fontWeight: 'bold', marginBottom: 5 },
   priceContainer: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 5, flexWrap: 'wrap' },
   salePrice: { fontSize: 14, fontWeight: 'bold', color: 'green', flexShrink: 1 },
@@ -475,6 +491,50 @@ const styles = StyleSheet.create({
   thumbnailContainer: { flexDirection: 'row', marginTop: 10 },
   thumbnail: { width: 60, height: 60, marginHorizontal: 5, borderRadius: 5, borderWidth: 1, borderColor: '#ccc' },
   selectedThumbnail: { borderWidth: 1 },
+  input: {
+    flex: 1,
+    height: 40,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    backgroundColor: '#fff',
+  },
+  //input
+  inputContainer: {
+    paddingVertical: 30,
+    gap: 10,
+    opacity: 0.7,
+  },
+  //moduals
+  button: {
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#000',
+    borderRadius: 5,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    width: '80%',
+    borderRadius: 10,
+    padding: 20,
+    alignItems: 'center',
+  },
+  option: {
+    padding: 10,
+    width: '100%',
+    alignItems: 'center',
+  },
+  cancelButton: {
+    marginTop: 10,
+    padding: 10,
+  },
 });
 
 export default ProductDetail;

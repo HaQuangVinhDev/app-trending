@@ -116,12 +116,11 @@ const ProductItem = [
   {
     id: 5,
     name: 'GOD DAM',
-    title: 'Y2K Couple Frame Personalized 2-layer Wooden Plaque,  Gift for Him, Gift for Her',
-    price: '$17.99 USD',
-    oldPrice: '$27.99 USD',
-    image: {
-      uri: 'https://cdn.shopify.com/s/files/1/0638/0811/0834/files/FOkRBezndv__trc22024120603048_web1_large.jpg?v=1738834940',
-    },
+    title:
+      "3D Effect Cute Cartoon Couple Walking Personalized Car Ornament, Perfect Valentine'Day Gift for him, Gift for her",
+    price: '$19.99 USD',
+    oldPrice: '$29.99 USD',
+    image: require('~/assets/images/couple/couple.png'),
     reviews: 18,
     colors: [
       { name: 'White', code: '#FFFFFF' },
@@ -136,7 +135,14 @@ const ProductItem = [
       { name: 'L', inStock: true },
       { name: 'XL', inStock: false },
     ],
-    thumbnails: [],
+    thumbnails: [
+      require('~/assets/images/couple/couple1.png'),
+      require('~/assets/images/couple/couple2.png'),
+      require('~/assets/images/couple/couple3.png'),
+      require('~/assets/images/couple/couple4.png'),
+      require('~/assets/images/couple/couple5.png'),
+      require('~/assets/images/couple/couple6.png'),
+    ],
   },
   {
     id: 6,
@@ -213,28 +219,48 @@ const ProductItem = [
   },
   {
     id: 9,
-    name: 'GOD DAM',
-    title: 'Y2K Couple Frame Personalized 2-layer Wooden Plaque,  Gift for Him, Gift for Her',
-    price: '$17.99 USD',
-    oldPrice: '$27.99 USD',
-    image: {
-      uri: 'https://cdn.shopify.com/s/files/1/0638/0811/0834/files/XMHPj7DBFg__trc22024121603162_web-1_large.jpg?v=1737455415',
-    },
+    title:
+      '3D Effect Cute Cartoon Couple Holding Hands Personalized Acrylic Car Hanger, Anniversary & Gift for him, Gift for her',
+    price: '$19.99 USD',
+    oldPrice: '$29.99 USD',
+    image: require('~/assets/images/couple/couple7.png'),
     reviews: 18,
-    colors: [
-      { name: 'White', code: '#FFFFFF' },
-      { name: 'Gray', color: '#E5E7EB' },
-      { name: 'pink', color: '#ffc0cb' },
-    ],
+    colors: [{ name: 'White', code: '#FFFFFF' }],
     sizes: [
-      { name: 'XXS', inStock: true },
-      { name: 'XS', inStock: true },
-      { name: 'S', inStock: true },
-      { name: 'M', inStock: true },
-      { name: 'L', inStock: true },
-      { name: 'XL', inStock: false },
+      { name: '3.54"', inStock: true },
+      { name: '4.5" Best Seller', inStock: true },
+      { name: '5.55"', inStock: true },
     ],
-    thumbnails: [],
+    thumbnails: [
+      require('~/assets/images/couple/couple8.png'),
+      require('~/assets/images/couple/couple9.png'),
+      require('~/assets/images/couple/couple10.png'),
+      require('~/assets/images/couple/couple11.png'),
+      require('~/assets/images/couple/couple12.png'),
+      require('~/assets/images/couple/couple13.png'),
+      require('~/assets/images/couple/couple14.png'),
+      require('~/assets/images/couple/couple15.png'),
+      require('~/assets/images/couple/couple16.png'),
+    ],
+    content: `Reviews
+Make his daily drives unforgettable with a gift straight from the heart. Our customizable car ornament lets you create a design that’s uniquely his, turning every commute into a meaningful reminder of your love and thoughtfulness. It’s more than just an accessory, it’s a little piece of home on the road.
+
+Product details:
+
+Material: Mica with stainless steel ball chain
+Size: 3.5x3.5 inch/ 9x9 cm (original dimension before the shape is customized, please allow up to 1' difference in height or width)
+Thickness: 0.11 inch / 3mm
+Technology: 1-sided printing. Outstanding UV printing technology, printed color is sharp and durable.
+The back side is the reflection of the front side.
+Package: With carton box, traw paper, and proactive foam bag
+Actual color may be slightly different from the image due to different monitor and light effects.
+Please allow 0.5-2 mm differences due to manual measurement.
+Personalization:
+
+Please fill in the required fields and carefully double-check the spelling
+To ensure the best looking, please use standard English only and exclude special characters
+The last step, click “Preview Your Personalization" to get a glimpse of the wonderful creation you've made
+What are you waiting for? Let’s create your own personalized car ornament and make special memories with your family today. SHOP NOW!`,
   },
   {
     id: 10,
@@ -289,12 +315,10 @@ const ProductItem = [
   {
     id: 12,
     name: 'GOD DAM',
-    title: 'Y2K Couple Frame Personalized 2-layer Wooden Plaque,  Gift for Him, Gift for Her',
-    price: '$17.99 USD',
-    oldPrice: '$27.99 USD',
-    image: {
-      uri: 'https://cdn.shopify.com/s/files/1/0638/0811/0834/files/ih44OdP1SS__web2_83b7536d-aabc-4cf8-ae42-84908d17e1be_large.jpg?v=1720178452',
-    },
+    title: "Custom Face Photo Personalized Beer Glass, Funny Gift For Dad, Unique Father's Day Gift",
+    price: '$22.66 USD',
+    oldPrice: '$36.99 USD',
+    image: require('~/assets/images/imagenew/Beer7.png'),
     reviews: 18,
     colors: [
       { name: 'White', code: '#FFFFFF' },
@@ -309,7 +333,13 @@ const ProductItem = [
       { name: 'L', inStock: true },
       { name: 'XL', inStock: false },
     ],
-    thumbnails: [],
+    thumbnails: [
+      require('~/assets/images/imagenew/Beer8.png'),
+      require('~/assets/images/imagenew/Beer9.png'),
+      require('~/assets/images/imagenew/Beer10.png'),
+      require('~/assets/images/imagenew/Beer11.png'),
+      require('~/assets/images/imagenew/Beer12.png'),
+    ],
   },
   {
     id: 13,

@@ -3,6 +3,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import GestureRecognizer from 'react-native-swipe-gestures';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { goBack } from 'expo-router/build/global-state/routing';
 export default function RootLayout() {
   const router = useRouter();
   const screenWidth = Dimensions.get('window').width;
@@ -11,9 +12,14 @@ export default function RootLayout() {
     if (gestureName === 'SWIPE_LEFT') {
       router.push('/bestsellermain'); // Chuyển đến trang tiếp theo
     } else if (gestureName === 'SWIPE_RIGHT') {
-      router.back();
+      if (router.canGoBack()) {
+        router.back(); // Quay lại trang trước nếu có
+      } else {
+        router.push('/'); // Nếu không có trang trước, quay về trang chủ
+      }
     }
   };
+
   return (
     <SafeAreaView style={styles.container}>
       <GestureHandlerRootView>

@@ -1,4 +1,4 @@
-import { View, Image, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
 
 const productImages = [
   {

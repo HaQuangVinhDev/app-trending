@@ -6,32 +6,23 @@ interface FooterSectionProps {
   items: string[];
 }
 
-const FooterSection: React.FC<FooterSectionProps> = ({ title, items }) => (
-  <View style={styles.section}>
-    <Text style={styles.sectionTitle}>{title}</Text>
-    {items.map((item) => (
-      <TouchableOpacity key={item} onPress={() => Linking.openURL('#')}>
-        <Text style={styles.sectionItem}>{item}</Text>
+const FooterSection: React.FC<FooterSectionProps> = ({ title, items }) => {
+  const [isOpenMenu, setIsOpenMenu] = useState(false);
+  return (
+    <View style={styles.section}>
+      {/* Khi bấm vào tiêu đề, toggle isOpenMenu */}
+      <TouchableOpacity onPress={() => setIsOpenMenu(!isOpenMenu)}>
+        <Text style={styles.sectionTitle}>{title}</Text>
       </TouchableOpacity>
-    ))}
-  </View>
-);
-
-const SocialIcon: React.FC<{ name: string }> = ({ name }) => (
-  <TouchableOpacity onPress={() => Linking.openURL('#')}>
-    <Image
-      source={{ uri: `https://trendingcustom.com/cdn/shop/t/57/assets/${name}.svg?v=40076760842241353711684321067` }}
-      style={styles.socialIcon}
-    />
-  </TouchableOpacity>
-);
-
-const PaymentIcon: React.FC<{ name: string }> = ({ name }) => (
-  <Image
-    source={{ uri: `https://trendingcustom.com/cdn/shop/t/57/assets/${name}.svg?v=60147985054043600351684321072` }}
-    style={styles.paymentIcon}
-  />
-);
+      {isOpenMenu &&
+        items.map((item) => (
+          <TouchableOpacity key={item} onPress={() => Linking.openURL('#')}>
+            <Text style={styles.sectionItem}>{item}</Text>
+          </TouchableOpacity>
+        ))}
+    </View>
+  );
+};
 
 export default function Footer() {
   return (
@@ -75,12 +66,6 @@ export default function Footer() {
           <Text style={styles.contactInfo}>
             <Text style={styles.bold}>Singapore:</Text> 66 Rangoon Road, #02-66, R66 Apartments, Singapore 218356
           </Text>
-
-          <View style={styles.socialIcons}>
-            {['facebook', 'youtube', 'pinterest', 'google'].map((social) => (
-              <SocialIcon key={social} name={social} />
-            ))}
-          </View>
         </View>
       </View>
 
@@ -96,12 +81,6 @@ export default function Footer() {
             <Text style={styles.trustButtonText}>Review us on Trustpilot</Text>
           </TouchableOpacity>
           <Text style={styles.trustedText}>Trusted by more than 2M+ customers</Text>
-        </View>
-
-        <View style={styles.paymentIcons}>
-          {['mcafee', 'applepay', 'paypal', 'visa', 'mastercard', 'americanexpress'].map((payment) => (
-            <PaymentIcon key={payment} name={payment} />
-          ))}
         </View>
 
         <Text style={styles.copyright}>© {new Date().getFullYear()} TrendingCustom™️ | Powered by Shopify</Text>

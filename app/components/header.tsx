@@ -4,13 +4,35 @@ import { Picker } from '@react-native-picker/picker';
 import { router } from 'expo-router';
 import { useCartCount } from '../Cart/useCartCount';
 import { Heart, ShoppingCart, User, Menu, Star, Gift, Truck } from 'lucide-react-native';
-import { View, Text, Image, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Image, TextInput, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 
 export default function Header() {
   const [isOpenMenu, setIsOpenMenu] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [suggestions, setSuggestions] = useState<string[]>([]);
   const [selectedCurrency, setSelectedCurrency] = useState('USD');
   const cartCount = useCartCount();
 
+  // Danh sách gợi ý cố định (có thể thay bằng API)
+  const searchData = ['Valentine Gift', 'Couples Gift', 'Gift for Her', 'Birthday Gift', 'Anniversary Gift'];
+
+  // Xử lý tìm kiếm
+  const handleSearch = (text: string) => {
+    setSearchQuery(text);
+    if (text.length > 0) {
+      const filteredSuggestions = searchData.filter((item) => item.toLowerCase().includes(text.toLowerCase()));
+      setSuggestions(filteredSuggestions);
+    } else {
+      setSuggestions([]);
+    }
+  };
+
+  // Xử lý chọn gợi ý
+  const handleSelectSuggestion = (item: string) => {
+    setSearchQuery(item);
+    setSuggestions([]); // Ẩn gợi ý sau khi chọn
+    router.push(`/`); // Điều hướng đến trang tìm kiếm
+  };
   return (
     <PanGestureHandler
       onHandlerStateChange={({ nativeEvent }) => {
@@ -38,9 +60,30 @@ export default function Header() {
             <TouchableOpacity onPress={() => router.push('/')}>
               <Image source={require('~/assets/images/logo.jpg')} style={styles.logo} />
             </TouchableOpacity>
-
-            {/* Search Input */}
-            <TextInput style={styles.input} placeholder="Search..." placeholderTextColor="#888" />
+            <View style={{ flex: 1 }}>
+              {/* Search Input */}
+              <TextInput
+                style={styles.input}
+                placeholder="Search..."
+                placeholderTextColor="#888"
+                value={searchQuery}
+                onChangeText={handleSearch}
+              />
+              {/* Hiển thị danh sách gợi ý */}
+              {suggestions.length > 0 && (
+                <View style={styles.suggestionsContainer}>
+                  <FlatList
+                    data={suggestions}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={({ item }) => (
+                      <TouchableOpacity style={styles.suggestionItem} onPress={() => handleSelectSuggestion(item)}>
+                        <Text style={styles.suggestionText}>{item}</Text>
+                      </TouchableOpacity>
+                    )}
+                  />
+                </View>
+              )}
+            </View>
           </View>
 
           {/* Dropdown Menu */}
@@ -251,5 +294,27 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#4A4A4A',
     marginBottom: 8,
+  },
+  suggestionsContainer: {
+    position: 'absolute',
+    top: 40,
+    left: 0,
+    right: 0,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    zIndex: 10,
+  },
+  suggestionItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+  suggestionText: {
+    fontSize: 16,
+    color: '#333',
   },
 });
