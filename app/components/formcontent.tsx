@@ -1,103 +1,146 @@
 import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
-import { useRouter } from 'expo-router';
+import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import Modal from 'react-native-modal';
+import { Menu, X, ChevronRight, ShoppingCart, User } from 'lucide-react-native';
 
-const product = {
-  name: 'Basic Tee 6-Pack',
-  price: '$192',
-  images: [
-    'https://tailwindui.com/plus-assets/img/ecommerce-images/product-page-02-secondary-product-shot.jpg',
-    'https://tailwindui.com/plus-assets/img/ecommerce-images/product-page-02-tertiary-product-shot-01.jpg',
-    'https://tailwindui.com/plus-assets/img/ecommerce-images/product-page-02-tertiary-product-shot-02.jpg',
-    'https://tailwindui.com/plus-assets/img/ecommerce-images/product-page-02-featured-product-shot.jpg',
-  ],
-  colors: [
-    { name: 'White', color: '#FFFFFF' },
-    { name: 'Gray', color: '#E5E7EB' },
-    { name: 'Black', color: '#111827' },
-  ],
-  sizes: [
-    { name: 'XXS', inStock: false },
-    { name: 'XS', inStock: true },
-    { name: 'S', inStock: true },
-    { name: 'M', inStock: true },
-    { name: 'L', inStock: true },
-    { name: 'XL', inStock: true },
-  ],
-};
-
-export default function ProductScreen() {
-  const router = useRouter();
-  const [selectedColor, setSelectedColor] = useState(product.colors[0]);
-  const [selectedSize, setSelectedSize] = useState(product.sizes[1]);
+export default function SidebarMenu() {
+  const [isMenuVisible, setIsMenuVisible] = useState(false);
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: 'white', padding: 16 }}>
-      <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 8 }}>{product.name}</Text>
-      <Text style={{ fontSize: 20, color: '#555', marginBottom: 16 }}>{product.price}</Text>
-
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {product.images.map((src, index) => (
-          <Image
-            key={index}
-            source={{ uri: src }}
-            style={{ width: 200, height: 200, marginRight: 8, borderRadius: 8 }}
-          />
-        ))}
-      </ScrollView>
-
-      <Text style={{ fontSize: 18, fontWeight: 'bold', marginTop: 16 }}>Choose Color</Text>
-      <View style={{ flexDirection: 'row', marginTop: 8 }}>
-        {product.colors.map((color) => (
-          <TouchableOpacity
-            key={color.name}
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: 20,
-              backgroundColor: color.color,
-              marginRight: 8,
-              borderWidth: selectedColor.name === color.name ? 2 : 0,
-              borderColor: 'black',
-            }}
-            onPress={() => setSelectedColor(color)}
-          />
-        ))}
-      </View>
-
-      <Text style={{ fontSize: 18, fontWeight: 'bold', marginTop: 16 }}>Choose Size</Text>
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 8 }}>
-        {product.sizes.map((size) => (
-          <TouchableOpacity
-            key={size.name}
-            style={{
-              padding: 10,
-              borderRadius: 8,
-              marginRight: 8,
-              marginBottom: 8,
-              backgroundColor: size.inStock ? (selectedSize.name === size.name ? '#4F46E5' : '#E5E7EB') : '#D1D5DB',
-            }}
-            disabled={!size.inStock}
-            onPress={() => setSelectedSize(size)}
-          >
-            <Text style={{ color: size.inStock ? (selectedSize.name === size.name ? 'white' : 'black') : '#6B7280' }}>
-              {size.name}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      <TouchableOpacity
-        style={{
-          backgroundColor: '#4F46E5',
-          padding: 15,
-          borderRadius: 8,
-          alignItems: 'center',
-          marginTop: 16,
-        }}
-      >
-        <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}>Add to Bag</Text>
+    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+      <ShoppingCart size={28} color="#333" />
+      {/* Nút mở Menu */}
+      <TouchableOpacity onPress={() => setIsMenuVisible(true)}>
+        <Menu size={28} color="#333" />
       </TouchableOpacity>
-    </ScrollView>
+
+      {/* Modal Menu */}
+      <Modal
+        isVisible={isMenuVisible}
+        onBackdropPress={() => setIsMenuVisible(false)}
+        animationIn="slideInLeft"
+        animationOut="slideOutLeft"
+        backdropOpacity={0.3}
+        style={styles.modal}
+      >
+        <View style={styles.menu}>
+          {/* Nút đóng menu */}
+          <TouchableOpacity onPress={() => setIsMenuVisible(false)} style={styles.closeButton}>
+            <X size={24} color="#333" />
+          </TouchableOpacity>
+
+          {/* Track Your Order */}
+          <TouchableOpacity style={styles.menuItem}>
+            <Text style={[styles.menuText, styles.boldText]}>📦 Track Your Order</Text>
+          </TouchableOpacity>
+
+          {/* Chuyển đổi tiền tệ */}
+          <Text style={styles.currency}>USD ▼</Text>
+
+          {/* Best Sellers & New Arrivals */}
+          <TouchableOpacity style={[styles.menuItem, styles.highlightRed]}>
+            <Text style={styles.menuText}>🔥 Best Sellers</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={[styles.menuItem, styles.highlightGreen]}>
+            <Text style={styles.menuText}>🆕 New Arrivals</Text>
+          </TouchableOpacity>
+
+          {/* Danh mục sản phẩm */}
+          {['Occasions', 'Recipients', 'Products', 'Gift Card'].map((item, index) => (
+            <TouchableOpacity key={index} style={styles.menuItem}>
+              <Text style={styles.menuText}>{item}</Text>
+              <ChevronRight size={16} color="#777" />
+            </TouchableOpacity>
+          ))}
+
+          {/* For Customers */}
+          <Text style={styles.sectionTitle}>For Customers</Text>
+          {['Rewards', 'Reviews', 'Gift Finder'].map((item, index) => (
+            <TouchableOpacity key={index} style={styles.menuItem}>
+              <Text style={styles.menuText}>{item}</Text>
+            </TouchableOpacity>
+          ))}
+
+          {/* By TrendingCustom */}
+          <Text style={styles.sectionTitle}>By TrendingCustom</Text>
+          {['Shipping info', 'Contact Us', 'Help Center', 'About Us', 'Our Blog'].map((item, index) => (
+            <TouchableOpacity key={index} style={styles.menuItem}>
+              <Text style={styles.menuText}>{item}</Text>
+            </TouchableOpacity>
+          ))}
+
+          {/* Mạng xã hội */}
+          <View style={styles.socialIcons}>
+            <Image source={require('~/assets/images/facebook.jpg')} style={styles.icon} />
+            <Image source={require('~/assets/images/youtube.png')} style={styles.icon} />
+            <Image source={require('~/assets/images/pinterest.jpg')} style={styles.icon} />
+            <Image source={require('~/assets/images/google.jpg')} style={styles.icon} />
+          </View>
+        </View>
+      </Modal>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  modal: {
+    margin: 0,
+    justifyContent: 'flex-start',
+  },
+  menu: {
+    width: '80%',
+    height: '100%',
+    backgroundColor: '#fff',
+    padding: 16,
+  },
+  closeButton: {
+    alignSelf: 'flex-end',
+    marginBottom: 10,
+  },
+  menuItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 10,
+  },
+  menuText: {
+    fontSize: 16,
+    color: '#333',
+  },
+  boldText: {
+    fontWeight: 'bold',
+  },
+  highlightRed: {
+    backgroundColor: '#ff4d4d',
+    padding: 10,
+    borderRadius: 5,
+    marginVertical: 5,
+  },
+  highlightGreen: {
+    backgroundColor: '#4CAF50',
+    padding: 10,
+    borderRadius: 5,
+    marginVertical: 5,
+  },
+  sectionTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginTop: 20,
+    color: '#777',
+  },
+  currency: {
+    fontSize: 14,
+    color: '#555',
+    marginBottom: 10,
+  },
+  socialIcons: {
+    flexDirection: 'row',
+    marginTop: 20,
+  },
+  icon: {
+    width: 30,
+    height: 30,
+    marginRight: 10,
+  },
+});

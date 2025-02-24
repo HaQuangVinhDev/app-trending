@@ -27,7 +27,7 @@ const categories = [
   },
   {
     title: 'For Pets',
-    image: require('~/assets/images/Group_34541_5_400x.avif'),
+    image: require('~/assets/images/Group_34541_5_400x.png'),
   },
 ];
 

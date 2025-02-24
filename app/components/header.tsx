@@ -4,14 +4,41 @@ import { Picker } from '@react-native-picker/picker';
 import { router } from 'expo-router';
 import { useCartCount } from '../Cart/useCartCount';
 import { Heart, ShoppingCart, User, Menu, Star, Gift, Truck } from 'lucide-react-native';
-import { View, Text, Image, TextInput, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
+import { View, Text, Image, TextInput, StyleSheet, TouchableOpacity, FlatList, Alert } from 'react-native';
+import LoginModal from '../auth/LoginModal';
+import RegisterModal from '../auth/register';
+import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 
 export default function Header() {
+  const [isLoginModalVisible, setLoginModalVisible] = useState(false);
+  const [isRegisterModalVisible, setRegisterModalVisible] = useState(false);
   const [isOpenMenu, setIsOpenMenu] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [selectedCurrency, setSelectedCurrency] = useState('USD');
+  const [userName, setUserName] = useState<string | null>(null);
   const cartCount = useCartCount();
+  const auth = getAuth();
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUserName(user.displayName || user.email || 'User');
+      } else {
+        setUserName(null);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      setUserName(null);
+      Alert.alert('Success', 'Logout successful.');
+    } catch (error) {
+      console.error('Logout failed:', error);
+      Alert.alert('Error', 'Logout failed. Please try again.');
+    }
+  };
 
   // Danh sách gợi ý cố định (có thể thay bằng API)
   const searchData = ['Valentine Gift', 'Couples Gift', 'Gift for Her', 'Birthday Gift', 'Anniversary Gift'];
@@ -33,6 +60,7 @@ export default function Header() {
     setSuggestions([]); // Ẩn gợi ý sau khi chọn
     router.push(`/`); // Điều hướng đến trang tìm kiếm
   };
+
   return (
     <PanGestureHandler
       onHandlerStateChange={({ nativeEvent }) => {
@@ -132,9 +160,20 @@ export default function Header() {
                 <TouchableOpacity>
                   <Heart size={24} color="#4A4A4A" />
                 </TouchableOpacity>
-                <TouchableOpacity>
-                  <User size={24} color="#4A4A4A" />
-                </TouchableOpacity>
+                {/* Nếu user đã đăng nhập, hiển thị tên + nút Logout */}
+                {userName ? (
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#4A4A4A' }}>{userName}</Text>
+                    <TouchableOpacity onPress={handleLogout} style={{ marginLeft: 10 }}>
+                      <Text style={{ fontSize: 14, color: 'red' }}>Logout</Text>
+                    </TouchableOpacity>
+                  </View>
+                ) : (
+                  // Nếu chưa đăng nhập, hiển thị icon đăng nhập
+                  <TouchableOpacity onPress={() => setLoginModalVisible(true)}>
+                    <User size={24} color="#4A4A4A" />
+                  </TouchableOpacity>
+                )}
                 <TouchableOpacity onPress={() => router.push('/Cart/cart')} style={styles.cartContainer}>
                   <ShoppingCart size={24} color="#4A4A4A" />
                   {cartCount > 0 && (
@@ -144,6 +183,26 @@ export default function Header() {
                     </View>
                   )}
                 </TouchableOpacity>
+                <LoginModal
+                  visible={isLoginModalVisible}
+                  onClose={() => setLoginModalVisible(false)}
+                  onSwitchToRegister={() => {
+                    setLoginModalVisible(false);
+                    setRegisterModalVisible(true);
+                  }}
+                  onLoginSuccess={(userName: string) => {
+                    console.log(`User ${userName} logged in successfully`);
+                  }}
+                />
+                {/* Gọi RegisterModal */}
+                <RegisterModal
+                  visible={isRegisterModalVisible}
+                  onClose={() => setRegisterModalVisible(false)}
+                  onSwitchToLogin={() => {
+                    setRegisterModalVisible(false);
+                    setLoginModalVisible(true);
+                  }}
+                />
               </View>
 
               {/* Navigation Links */}
