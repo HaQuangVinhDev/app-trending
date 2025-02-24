@@ -24,11 +24,6 @@ export default function SidebarMenu() {
         style={styles.modal}
       >
         <View style={styles.menu}>
-          {/* Nút đóng menu */}
-          <TouchableOpacity onPress={() => setIsMenuVisible(false)} style={styles.closeButton}>
-            <X size={24} color="#333" />
-          </TouchableOpacity>
-
           {/* Track Your Order */}
           <TouchableOpacity style={styles.menuItem}>
             <Text style={[styles.menuText, styles.boldText]}>📦 Track Your Order</Text>
@@ -75,7 +70,7 @@ export default function SidebarMenu() {
             <Image source={require('~/assets/images/facebook.jpg')} style={styles.icon} />
             <Image source={require('~/assets/images/youtube.png')} style={styles.icon} />
             <Image source={require('~/assets/images/pinterest.jpg')} style={styles.icon} />
-            <Image source={require('~/assets/images/google.jpg')} style={styles.icon} />
+            <Image source={require('~/assets/images/google.png')} style={styles.icon} />
           </View>
         </View>
       </Modal>

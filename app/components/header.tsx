@@ -3,11 +3,12 @@ import { PanGestureHandler, State } from 'react-native-gesture-handler';
 import { Picker } from '@react-native-picker/picker';
 import { router } from 'expo-router';
 import { useCartCount } from '../Cart/useCartCount';
-import { Heart, ShoppingCart, User, Menu, Star, Gift, Truck } from 'lucide-react-native';
+import { Heart, ShoppingCart, User, Menu, Star, Gift, Truck, ChevronRight } from 'lucide-react-native';
 import { View, Text, Image, TextInput, StyleSheet, TouchableOpacity, FlatList, Alert } from 'react-native';
 import LoginModal from '../auth/LoginModal';
 import RegisterModal from '../auth/register';
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
+import Modal from 'react-native-modal';
 
 export default function Header() {
   const [isLoginModalVisible, setLoginModalVisible] = useState(false);
@@ -18,6 +19,8 @@ export default function Header() {
   const [selectedCurrency, setSelectedCurrency] = useState('USD');
   const [userName, setUserName] = useState<string | null>(null);
   const cartCount = useCartCount();
+
+  const [isMenuVisible, setIsMenuVisible] = useState(false);
   const auth = getAuth();
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -76,18 +79,132 @@ export default function Header() {
             🎉 Order 2+ items to SAVE 10% using code: TRC10
           </Text>
         </View>
+        <View style={{ marginTop: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
+          {/* Logo */}
+          <TouchableOpacity style={{ position: 'relative', marginBottom: 10 }} onPress={() => router.push('/')}>
+            <Image source={require('~/assets/images/logo.jpg')} style={styles.logo} />
+          </TouchableOpacity>
 
+          {/* Icons */}
+          <View style={styles.iconContainer}>
+            <TouchableOpacity>
+              <Heart size={28} color="#4A4A4A" />
+            </TouchableOpacity>
+            {/* Nếu user đã đăng nhập, hiển thị tên + nút Logout */}
+            {userName ? (
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#4A4A4A' }}>{userName}</Text>
+                <TouchableOpacity onPress={handleLogout} style={{ marginLeft: 10 }}>
+                  <Text style={{ fontSize: 14, color: 'red' }}>Logout</Text>
+                </TouchableOpacity>
+              </View>
+            ) : (
+              // Nếu chưa đăng nhập, hiển thị icon đăng nhập
+              <TouchableOpacity onPress={() => setLoginModalVisible(true)} style={{ marginLeft: 30, marginRight: 30 }}>
+                <User size={28} color="#4A4A4A" />
+              </TouchableOpacity>
+            )}
+            <TouchableOpacity onPress={() => router.push('/Cart/cart')} style={styles.cartContainer}>
+              <ShoppingCart size={28} color="#4A4A4A" />
+              {cartCount > 0 && (
+                <View style={styles.cartBadge}>
+                  {' '}
+                  <Text style={styles.cartBadgeText}>{cartCount}</Text>
+                </View>
+              )}
+            </TouchableOpacity>
+            <LoginModal
+              visible={isLoginModalVisible}
+              onClose={() => setLoginModalVisible(false)}
+              onSwitchToRegister={() => {
+                setLoginModalVisible(false);
+                setRegisterModalVisible(true);
+              }}
+              onLoginSuccess={(userName: string) => {
+                console.log(`User ${userName} logged in successfully`);
+              }}
+            />
+            {/* Gọi RegisterModal */}
+            <RegisterModal
+              visible={isRegisterModalVisible}
+              onClose={() => setRegisterModalVisible(false)}
+              onSwitchToLogin={() => {
+                setRegisterModalVisible(false);
+                setLoginModalVisible(true);
+              }}
+            />
+          </View>
+        </View>
         {/* Main Header */}
         <View style={styles.container}>
           <View style={styles.header}>
             {/* Menu Button */}
-            <TouchableOpacity onPress={() => setIsOpenMenu(!isOpenMenu)}>
-              <Menu size={28} color="#4A4A4A" />
-            </TouchableOpacity>
-            {/* Logo */}
-            <TouchableOpacity onPress={() => router.push('/')}>
-              <Image source={require('~/assets/images/logo.jpg')} style={styles.logo} />
-            </TouchableOpacity>
+            <View>
+              <TouchableOpacity onPress={() => setIsOpenMenu(true)}>
+                <Menu size={28} color="#4A4A4A" />
+              </TouchableOpacity>
+
+              <Modal
+                isVisible={isOpenMenu}
+                onBackdropPress={() => setIsOpenMenu(false)}
+                animationIn={'slideInLeft'}
+                animationOut={'slideOutLeft'}
+                backdropOpacity={0.3}
+                style={styles.modal}
+              >
+                <View style={styles.inmenu}>
+                  {/* Track Your Order */}
+                  <TouchableOpacity style={styles.menuItem}>
+                    <Text style={[styles.menuText, styles.boldText]}>📦 Track Your Order</Text>
+                  </TouchableOpacity>
+
+                  {/* Chuyển đổi tiền tệ */}
+                  <Text style={styles.currency}>USD ▼</Text>
+
+                  {/* Best Sellers & New Arrivals */}
+                  <TouchableOpacity style={[styles.menuItem, styles.highlightRed]}>
+                    <Text style={styles.menuintext}>🔥 Best Sellers</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity style={[styles.menuItem, styles.highlightGreen]}>
+                    <Text style={styles.menuintext}>🆕 New Arrivals</Text>
+                  </TouchableOpacity>
+
+                  {/* Danh mục sản phẩm */}
+                  {['Occasions', 'Recipients', 'Products', 'Gift Card'].map((item, index) => (
+                    <TouchableOpacity key={index} style={styles.menuItem}>
+                      <Text style={styles.menuintext}>{item}</Text>
+                      <ChevronRight size={16} color="#777" />
+                    </TouchableOpacity>
+                  ))}
+
+                  {/* For Customers */}
+                  <Text style={styles.sectionTitle}>For Customers</Text>
+                  {['Rewards', 'Reviews', 'Gift Finder'].map((item, index) => (
+                    <TouchableOpacity key={index} style={styles.menuItem}>
+                      <Text style={styles.menuintext}>{item}</Text>
+                    </TouchableOpacity>
+                  ))}
+
+                  {/* By TrendingCustom */}
+                  <Text style={styles.sectionTitle}>By TrendingCustom</Text>
+                  {['Shipping info', 'Contact Us', 'Help Center', 'About Us', 'Our Blog'].map((item, index) => (
+                    <TouchableOpacity key={index} style={styles.menuItem}>
+                      <Text style={styles.menuText}>{item}</Text>
+                    </TouchableOpacity>
+                  ))}
+
+                  {/* Mạng xã hội */}
+                  <View style={styles.socialIcons}>
+                    <Image source={require('~/assets/images/facebook.jpg')} style={styles.icon} />
+                    <Image source={require('~/assets/images/youtube.png')} style={styles.icon} />
+                    <Image source={require('~/assets/images/pinterest.jpg')} style={styles.icon} />
+                    <Image source={require('~/assets/images/google.png')} style={styles.icon} />
+                  </View>
+                </View>
+              </Modal>
+            </View>
+
             <View style={{ flex: 1 }}>
               {/* Search Input */}
               <TextInput
@@ -155,56 +272,6 @@ export default function Header() {
                 </View>
               </View>
 
-              {/* Icons */}
-              <View style={styles.iconContainer}>
-                <TouchableOpacity>
-                  <Heart size={24} color="#4A4A4A" />
-                </TouchableOpacity>
-                {/* Nếu user đã đăng nhập, hiển thị tên + nút Logout */}
-                {userName ? (
-                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#4A4A4A' }}>{userName}</Text>
-                    <TouchableOpacity onPress={handleLogout} style={{ marginLeft: 10 }}>
-                      <Text style={{ fontSize: 14, color: 'red' }}>Logout</Text>
-                    </TouchableOpacity>
-                  </View>
-                ) : (
-                  // Nếu chưa đăng nhập, hiển thị icon đăng nhập
-                  <TouchableOpacity onPress={() => setLoginModalVisible(true)}>
-                    <User size={24} color="#4A4A4A" />
-                  </TouchableOpacity>
-                )}
-                <TouchableOpacity onPress={() => router.push('/Cart/cart')} style={styles.cartContainer}>
-                  <ShoppingCart size={24} color="#4A4A4A" />
-                  {cartCount > 0 && (
-                    <View style={styles.cartBadge}>
-                      {' '}
-                      <Text style={styles.cartBadgeText}>{cartCount}</Text>
-                    </View>
-                  )}
-                </TouchableOpacity>
-                <LoginModal
-                  visible={isLoginModalVisible}
-                  onClose={() => setLoginModalVisible(false)}
-                  onSwitchToRegister={() => {
-                    setLoginModalVisible(false);
-                    setRegisterModalVisible(true);
-                  }}
-                  onLoginSuccess={(userName: string) => {
-                    console.log(`User ${userName} logged in successfully`);
-                  }}
-                />
-                {/* Gọi RegisterModal */}
-                <RegisterModal
-                  visible={isRegisterModalVisible}
-                  onClose={() => setRegisterModalVisible(false)}
-                  onSwitchToLogin={() => {
-                    setRegisterModalVisible(false);
-                    setLoginModalVisible(true);
-                  }}
-                />
-              </View>
-
               {/* Navigation Links */}
               <View>
                 <TouchableOpacity onPress={() => router.push('/')}>
@@ -251,6 +318,7 @@ export default function Header() {
 const styles = StyleSheet.create({
   cartContainer: {
     position: 'relative',
+    marginRight: 60,
   },
   cartBadge: {
     position: 'absolute',
@@ -334,8 +402,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 4,
     paddingVertical: 10,
-    borderTopWidth: 1,
-    borderTopColor: '#ddd',
+
     marginTop: 10,
   },
   trustBadge: {
@@ -373,6 +440,55 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ddd',
   },
   suggestionText: {
+    fontSize: 16,
+    color: '#333',
+  },
+
+  // menu
+
+  highlightRed: {
+    backgroundColor: '#ff4d4d',
+    padding: 10,
+    borderRadius: 5,
+    marginVertical: 5,
+  },
+  highlightGreen: {
+    backgroundColor: '#4CAF50',
+    padding: 10,
+    borderRadius: 5,
+    marginVertical: 5,
+  },
+  sectionTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginTop: 20,
+    color: '#777',
+  },
+  currency: {
+    fontSize: 14,
+    color: '#555',
+    marginBottom: 10,
+  },
+  socialIcons: {
+    flexDirection: 'row',
+    marginTop: 20,
+  },
+  icon: {
+    width: 30,
+    height: 30,
+    marginRight: 10,
+  },
+  modal: {
+    margin: 0,
+    justifyContent: 'flex-start',
+  },
+  inmenu: {
+    width: '80%',
+    height: '100%',
+    backgroundColor: '#fff',
+    padding: 16,
+  },
+  menuintext: {
     fontSize: 16,
     color: '#333',
   },

@@ -18,7 +18,7 @@ export default function LoginModal({ visible, onClose, onSwitchToRegister, onLog
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isForgetPasswordVisible, setForgetPasswordVisible] = useState(false);
-  const [userName, setUserName] = useState<string | null>(null);
+
   const handleClose = () => {
     setEmail('');
     setPassword('');
