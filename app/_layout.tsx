@@ -1,16 +1,47 @@
-import { Stack, useRouter } from 'expo-router';
+import { Slot, Stack, useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import GestureRecognizer from 'react-native-swipe-gestures';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { goBack } from 'expo-router/build/global-state/routing';
+import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
+import { useEffect, useState } from 'react';
+import { checkUserRole } from '../app/admin/utils/authService'; // Import kiểm tra quyền Admin
+
 export default function RootLayout() {
+  const [user, setUser] = useState<User | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+
   const router = useRouter();
+  const auth = getAuth();
   const screenWidth = Dimensions.get('window').width;
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      setUser(firebaseUser);
+
+      if (firebaseUser) {
+        const adminStatus = await checkUserRole(firebaseUser);
+        setIsAdmin(adminStatus);
+
+        // 🔀 Điều hướng ngay khi xác định quyền
+        if (adminStatus) {
+          router.replace('/admin'); // Nếu là admin → chuyển đến admin
+        } else {
+          router.replace('/'); // Nếu là user thường → chuyển về trang chính
+        }
+      } else {
+        setIsAdmin(false);
+        router.replace('/'); // Nếu không đăng nhập → quay về trang chính
+      }
+    });
+
+    return () => unsubscribe(); // Cleanup listener khi component bị unmount
+  }, []);
+
   // Xử lý vuốt sang trái và phải
   const handleSwipe = (gestureName: string) => {
     if (gestureName === 'SWIPE_LEFT') {
-      router.push('/bestsellermain'); // Chuyển đến trang tiếp theo
+      router.canGoBack(); // Chuyển đến trang tiếp theo
     } else if (gestureName === 'SWIPE_RIGHT') {
       if (router.canGoBack()) {
         router.back(); // Quay lại trang trước nếu có
@@ -34,6 +65,8 @@ export default function RootLayout() {
         >
           <Stack screenOptions={{ headerShown: false }}>
             <Stack.Screen name="index" />
+            <Stack.Screen name="admin" />
+            <Stack.Screen name="user" />
             <Stack.Screen name="bestsellermain" />
             <Stack.Screen name="thumbnail" />
           </Stack>

@@ -7,7 +7,7 @@ node_modules/
 .expo/
 dist/
 web-build/
-
+setAdmin.js
 # Native
 *.orig.*
 *.jks
@@ -76,3 +76,5 @@ yarn-error.*
 *.tsbuildinfo
 
 # @end expo-cli
+
+serviceAccountKey.json

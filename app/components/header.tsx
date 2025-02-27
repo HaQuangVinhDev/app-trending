@@ -20,14 +20,13 @@ export default function Header() {
   const [userName, setUserName] = useState<string | null>(null);
   const cartCount = useCartCount();
 
-  const [isMenuVisible, setIsMenuVisible] = useState(false);
   const auth = getAuth();
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        setUserName(user.displayName || user.email || 'User');
+        setUserName(user.displayName || user.email || 'User'); // ✅ Nếu user đăng nhập, cập nhật tên
       } else {
-        setUserName(null);
+        setUserName(null); // ✅ Nếu user đăng xuất, reset tên
       }
     });
     return () => unsubscribe();
@@ -81,13 +80,13 @@ export default function Header() {
         </View>
         <View style={{ marginTop: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
           {/* Logo */}
-          <TouchableOpacity style={{ position: 'relative', marginBottom: 10 }} onPress={() => router.push('/')}>
+          <TouchableOpacity style={{ position: 'relative', marginBottom: 10 }} onPress={() => router.push('/runapp')}>
             <Image source={require('~/assets/images/logo.jpg')} style={styles.logo} />
           </TouchableOpacity>
 
           {/* Icons */}
           <View style={styles.iconContainer}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push('/')}>
               <Heart size={28} color="#4A4A4A" />
             </TouchableOpacity>
             {/* Nếu user đã đăng nhập, hiển thị tên + nút Logout */}
@@ -162,7 +161,10 @@ export default function Header() {
                   <Text style={styles.currency}>USD ▼</Text>
 
                   {/* Best Sellers & New Arrivals */}
-                  <TouchableOpacity style={[styles.menuItem, styles.highlightRed]}>
+                  <TouchableOpacity
+                    onPress={() => router.push('/bestsellermain')}
+                    style={[styles.menuItem, styles.highlightRed]}
+                  >
                     <Text style={styles.menuintext}>🔥 Best Sellers</Text>
                   </TouchableOpacity>
 
@@ -196,10 +198,20 @@ export default function Header() {
 
                   {/* Mạng xã hội */}
                   <View style={styles.socialIcons}>
-                    <Image source={require('~/assets/images/facebook.jpg')} style={styles.icon} />
-                    <Image source={require('~/assets/images/youtube.png')} style={styles.icon} />
-                    <Image source={require('~/assets/images/pinterest.jpg')} style={styles.icon} />
-                    <Image source={require('~/assets/images/google.png')} style={styles.icon} />
+                    <TouchableOpacity onPress={() => router.push('/admin/upload/upload')}>
+                      <Image source={require('~/assets/images/facebook.jpg')} style={styles.icon} />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => router.push('/runapp')}>
+                      {' '}
+                      <Image source={require('~/assets/images/youtube.png')} style={styles.icon} />
+                    </TouchableOpacity>
+                    <TouchableOpacity>
+                      {' '}
+                      <Image source={require('~/assets/images/pinterest.jpg')} style={styles.icon} />
+                    </TouchableOpacity>
+                    <TouchableOpacity>
+                      <Image source={require('~/assets/images/google.png')} style={styles.icon} />
+                    </TouchableOpacity>
                   </View>
                 </View>
               </Modal>
@@ -272,7 +284,7 @@ export default function Header() {
                 </View>
               </View>
 
-              {/* Navigation Links */}
+              {/*  Links */}
               <View>
                 <TouchableOpacity onPress={() => router.push('/')}>
                   <Text style={styles.navItemText}>Home</Text>
@@ -369,6 +381,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   menuItem: {
+    marginTop: 10,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,

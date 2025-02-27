@@ -12,6 +12,8 @@ import Card from './components/card';
 import Ban from './components/ban';
 import Question from './components/quesion';
 import FormContent from './components/formcontent';
+import { useRouter } from 'expo-router';
+import { useEffect } from 'react';
 
 const sections = [
   { id: '1', component: <Catalog /> },

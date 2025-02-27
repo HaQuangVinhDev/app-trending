@@ -1,4 +1,14 @@
-import { View, Text, Image, StyleSheet, ScrollView, Alert, TouchableOpacity, TextInput } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  ScrollView,
+  Alert,
+  TouchableOpacity,
+  TextInput,
+  ImageSourcePropType,
+} from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { products } from '../data/product';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -7,7 +17,7 @@ import { useEffect, useState } from 'react';
 type CartItem = {
   productId: string;
   title: string;
-  image: string;
+  image: ImageSourcePropType;
   price: number;
   quantity: number;
 };
@@ -22,7 +32,17 @@ interface Review {
 export default function ProductDetail() {
   const { id } = useLocalSearchParams();
   const [quantity, setQuantity] = useState(1);
-  const product = products.find((p) => p.id === id);
+  const product = products.find((p) => p.id === id) as
+    | {
+        id: string;
+        name: string;
+        price: number;
+        originalPrice: number;
+        image: ImageSourcePropType;
+        rating: number;
+        reviews: number;
+      }
+    | undefined;
   //More item
   const moreItems = [
     {

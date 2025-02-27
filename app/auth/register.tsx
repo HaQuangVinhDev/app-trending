@@ -22,8 +22,8 @@ export default function RegisterModal({ visible, onClose, onSwitchToLogin }: Reg
     try {
       console.log('📩 Registering user with:', email, password, firstName, lastName);
       await registerUser(email, password, firstName);
-      Alert.alert('Success', 'Account created!');
-      onClose(); // Đóng modal sau khi đăng ký thành công
+      Alert.alert('Success', 'Account created! Please log in to continue.');
+      onClose(); // Đóng modal đăng ký
     } catch (error: any) {
       console.error('❌ Register Error:', error);
 

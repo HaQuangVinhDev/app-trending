@@ -5,6 +5,9 @@ import { X } from 'lucide-react-native';
 import { loginUser } from '../utils/authService';
 import { useRouter } from 'expo-router';
 import ForgetPasswordModal from './ForgetPasswordModal';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import { auth, db } from '~/firebaseConfig';
 
 interface LoginModalProps {
   visible: boolean;
@@ -26,13 +29,34 @@ export default function LoginModal({ visible, onClose, onSwitchToRegister, onLog
   };
   const handleLogin = async () => {
     try {
-      const userCredential = await loginUser(email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userRef = doc(db, 'users', userCredential.user.uid);
+      const userSnap = await getDoc(userRef);
 
-      // Gọi hàm cập nhật tên user từ props
-      onLoginSuccess(userCredential.displayName || userCredential.email || 'User');
+      let isAdmin = false;
+      if (userSnap.exists()) {
+        const userData = userSnap.data();
+        isAdmin = userData.role === 'admin';
+      }
+      if (isAdmin) {
+        Alert.alert('Admin Login', 'You have logged in as an Admin.');
+        router.replace('/admin'); // 👉 Chuyển đến layout admin
+      } else {
+        Alert.alert('Success', 'Logged in successfully!');
+        router.replace('/'); // 👉 Chuyển đến trang chính
+      }
 
-      Alert.alert('Success', 'Logged in successfully!');
-      handleClose(); // Đóng modal khi đăng nhập thành công
+      // ✅ Hiển thị thông báo tùy theo quyền user
+      if (isAdmin) {
+        Alert.alert('Admin Login', 'You have logged in as an Admin.');
+      } else {
+        Alert.alert('Success', 'Logged in successfully!');
+      }
+
+      // ✅ Gửi tên user lên giao diện
+      onLoginSuccess(userCredential.user.displayName || userCredential.user.email || 'User');
+
+      handleClose(); // ✅ Đóng modal sau khi đăng nhập thành công
     } catch (error: any) {
       console.error('❌ Login Error:', error);
       if (error.code === 'auth/invalid-email') {

@@ -14,8 +14,7 @@ export const products: Product[] = [
   {
     id: '1',
     name: 'Romantic Beach Landscape',
-    image:
-      'https://trendingcustom.com/products/psnl-pregnant-mom-baby-bump-wooden-plaque-pregnancy-announcement-expecting-parents-mothers-day-gift-for-mom-22503705',
+    image: 'https://trendingcustom.com/cdn/shop/files/For_Mom_200x.png?v=1740123307',
     price: 39.99,
     originalPrice: 44.99,
     reviews: 280,
@@ -24,7 +23,7 @@ export const products: Product[] = [
   {
     id: '2',
     name: 'Our Moon Couple Gift Moon Phase Art Anniversary for Wife, Gift for Husband Wedding Anniversary Personalized Poster',
-    image: require('~/assets/images/imagenew/tabmoon.png'),
+    image: 'https://trendingcustom.com/cdn/shop/files/For_Grandma_200x.png?v=1740123307',
     price: 39.99,
     originalPrice: 44.99,
     reviews: 180,
@@ -33,7 +32,7 @@ export const products: Product[] = [
   {
     id: '3',
     name: 'Custom Pet Portrait',
-    image: require('~/assets/images/imagenew/you.png'),
+    image: 'https://trendingcustom.com/cdn/shop/files/Group_34541_2_200x.png?v=1735282942',
     price: 39.99,
     originalPrice: 44.99,
     reviews: 118,
@@ -42,7 +41,7 @@ export const products: Product[] = [
   {
     id: '4',
     name: 'Personalized Name Necklace',
-    image: require('~/assets/images/I9rUKYrNvO__web1_400x.webp'),
+    image: 'https://trendingcustom.com/cdn/shop/files/Group_34541_3_200x.png?v=1735282942',
     price: 39.99,
     originalPrice: 44.99,
     reviews: 300,
@@ -51,7 +50,7 @@ export const products: Product[] = [
   {
     id: '5',
     name: 'Couple Birth Month Flower Personalized Acrylic Block LED Night Light, Heartfelt 2025  Gift For Him, For Her, Boyfriend, Girlfriend, Husband, Wife',
-    image: require('~/assets/images/imagenew/couple.png'),
+    image: 'https://trendingcustom.com/cdn/shop/files/Group_34541_4_200x.png?v=1735282941',
     price: 39.99,
     originalPrice: 44.99,
     reviews: 200,
@@ -60,7 +59,7 @@ export const products: Product[] = [
   {
     id: '6',
     name: 'Couple Birth Month Flower Personalized Acrylic Block LED Night Light, Heartfelt 2025  Gift For Him, For Her, Boyfriend, Girlfriend, Husband, Wife',
-    image: require('~/assets/images/imagenew/Favorite.png'),
+    image: 'https://trendingcustom.com/cdn/shop/files/Group_34541_5_200x.png?v=1735282942',
     price: 39.99,
     originalPrice: 44.99,
     reviews: 180,
