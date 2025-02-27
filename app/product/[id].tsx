@@ -10,7 +10,6 @@ import {
   StyleSheet,
   Alert,
   ToastAndroid,
-  Modal,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useLocalSearchParams } from 'expo-router';
@@ -18,8 +17,50 @@ import ProductItem from '../data/productitem';
 import Header from '../components/header';
 import Question from '../components/quesion';
 import Footer from '../components/footer';
-import { Picker } from '@react-native-picker/picker';
+import * as ImagePicker from 'expo-image-picker'; // Thêm import này
+import { db } from '~/firebaseConfig'; // Import Firestore
+import { collection, addDoc, getDocs, query, where } from 'firebase/firestore'; // Firestore functions
+import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
+// Hàm upload ảnh từ file đầu tiên
+const CLOUD_NAME = 'dwg8jrkdn'; // Thay bằng Cloud Name của bạn
+const UPLOAD_PRESET = 'expo_upload'; // Thay bằng Upload Preset của bạn
 
+async function pickAndUploadImage() {
+  let result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    allowsEditing: true,
+    quality: 1,
+  });
+
+  if (!result.canceled) {
+    const imageUri = result.assets[0].uri;
+    return uploadImage(imageUri);
+  }
+  return null;
+}
+
+async function uploadImage(imageUri: string) {
+  let formData = new FormData();
+  formData.append('file', {
+    uri: imageUri,
+    type: 'image/jpeg',
+    name: 'upload.jpg',
+  } as any);
+  formData.append('upload_preset', UPLOAD_PRESET);
+
+  try {
+    let response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    let data = await response.json();
+    return data.secure_url; // URL ảnh sau khi upload thành công
+  } catch (error) {
+    console.error('Upload failed', error);
+    return null;
+  }
+}
 interface CartItem {
   productId: string;
   title: string;
@@ -36,6 +77,7 @@ interface Review {
   user: string;
   rating: number;
   comment: string;
+  imageUrl?: string; // Thêm trường để lưu URL ảnh
 }
 
 const ProductDetail: FC = () => {
@@ -52,6 +94,17 @@ const ProductDetail: FC = () => {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [newReview, setNewReview] = useState('');
   const [rating, setRating] = useState(5);
+  const [reviewImageUrl, setReviewImageUrl] = useState<string | null>(null); // State để lưu URL ảnh tạm thời
+  const [currentUser, setCurrentUser] = useState<User | null>(null); // Trạng thái đăng nhập
+  const auth = getAuth();
+
+  // Theo dõi trạng thái đăng nhập
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setCurrentUser(user);
+    });
+    return () => unsubscribe();
+  }, []);
   const moreItems = [
     {
       id: '1',
@@ -111,15 +164,31 @@ const ProductDetail: FC = () => {
   };
 
   const [currentImage, setCurrentImage] = useState(getImageSource(product?.image));
-  // Load đánh giá từ AsyncStorage
+  // Load và đồng bộ đánh giá
   useEffect(() => {
     const loadReviews = async () => {
       try {
+        // 1. Load từ AsyncStorage
         const storedReviews = await AsyncStorage.getItem('reviews');
-        if (storedReviews) {
-          const parsedReviews: Review[] = JSON.parse(storedReviews);
-          setReviews(parsedReviews.filter((r) => r.productId === id));
-        }
+        let localReviews: Review[] = storedReviews ? JSON.parse(storedReviews) : [];
+        localReviews = localReviews.filter((r) => r.productId === id);
+
+        // 2. Load từ Firestore
+        const q = query(collection(db, 'reviews'), where('productId', '==', id));
+        const querySnapshot = await getDocs(q);
+        const firestoreReviews: Review[] = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as Review[];
+
+        // Gộp dữ liệu, ưu tiên Firestore (dựa trên ID)
+        const mergedReviewsMap = new Map<string, Review>();
+        localReviews.forEach((review) => mergedReviewsMap.set(review.id, review));
+        firestoreReviews.forEach((review) => mergedReviewsMap.set(review.id, review)); // Ghi đè nếu trùng ID
+
+        const mergedReviews = Array.from(mergedReviewsMap.values());
+        setReviews(mergedReviews);
+        await AsyncStorage.setItem('reviews', JSON.stringify(mergedReviews));
       } catch (error) {
         console.error('Error loading reviews:', error);
       }
@@ -128,35 +197,76 @@ const ProductDetail: FC = () => {
     loadReviews();
   }, [id]);
 
-  // Thêm đánh giá mới
+  // Hàm xử lý upload ảnh
+  const handleImageUpload = async () => {
+    const imageUrl = await pickAndUploadImage();
+    if (imageUrl) {
+      setReviewImageUrl(imageUrl);
+      ToastAndroid.show('Image uploaded successfully!', ToastAndroid.SHORT);
+    } else {
+      Alert.alert('Error', 'Failed to upload image.');
+    }
+  };
+
+  // Thêm bình luận mới
   const addReview = async () => {
+    if (!currentUser) {
+      Alert.alert('Error', 'Please log in to add a review!');
+      return;
+    }
     if (newReview.trim() === '') {
-      Alert.alert('Error', 'Please add review!');
+      Alert.alert('Error', 'Please add a review!');
       return;
     }
 
     const review: Review = {
-      id: Date.now().toString(),
+      id: Date.now().toString(), // ID tạm thời
       productId: id as string,
-      user: 'User', // Có thể thay bằng username thực tế nếu có hệ thống user
+      user: currentUser.email || 'Anonymous', // Lấy email từ Firebase Auth
       rating,
       comment: newReview,
+      imageUrl: reviewImageUrl || undefined,
     };
-
     try {
+      // 1. Lưu vào AsyncStorage
       const storedReviews = await AsyncStorage.getItem('reviews');
-      const updatedReviews = storedReviews ? JSON.parse(storedReviews) : [];
-      updatedReviews.push(review);
+      const updatedLocalReviews = storedReviews ? JSON.parse(storedReviews) : [];
+      updatedLocalReviews.push(review);
+      await AsyncStorage.setItem('reviews', JSON.stringify(updatedLocalReviews));
 
-      await AsyncStorage.setItem('reviews', JSON.stringify(updatedReviews));
-      setReviews((prev) => [...prev, review]);
+      // 2. Lưu vào Firestore
+      const docRef = await addDoc(collection(db, 'reviews'), review);
+      const reviewWithFirestoreId = { ...review, id: docRef.id };
+
+      // 3. Cập nhật state (chỉ thêm một lần với ID từ Firestore)
+      setReviews((prev) => {
+        const updatedReviews = prev.filter((r) => r.id !== review.id); // Xóa bản tạm nếu có
+        return [...updatedReviews, reviewWithFirestoreId];
+      });
+
+      // 4. Cập nhật AsyncStorage với ID từ Firestore
+      const finalReviews = updatedLocalReviews.filter((r: Review) => r.id !== review.id);
+      finalReviews.push(reviewWithFirestoreId);
+      await AsyncStorage.setItem('reviews', JSON.stringify(finalReviews));
+
+      // Reset form
       setNewReview('');
       setRating(5);
+      setReviewImageUrl(null);
+      ToastAndroid.show('Review added successfully!', ToastAndroid.SHORT);
     } catch (error) {
-      console.error('Error saving review:', error);
+      console.error('Error adding review:', error);
+      Alert.alert('Error', 'Failed to add review.');
     }
   };
-
+  // Hàm render sao
+  const renderStars = (rating: number) => {
+    return [...Array(5)].map((_, i) => (
+      <Text key={i} style={[styles.star, i < rating && styles.selectedStar]}>
+        ★
+      </Text>
+    ));
+  };
   // Hàm thêm vào giỏ hàng
   const addToCart = async () => {
     if (!product) return;
@@ -346,42 +456,55 @@ const ProductDetail: FC = () => {
           ))}
         </ScrollView>
       </View>
+
       {/* Danh sách đánh giá */}
       <View style={styles.reviewSection}>
         <Text style={styles.reviewTitle}>Reviews</Text>
         {reviews.length === 0 ? (
-          <Text>No reviews yet. Be the first!</Text>
+          <Text style={styles.noReviewsText}>No reviews yet. Be the first!</Text>
         ) : (
-          reviews.map((review) => (
-            <View key={review.id} style={styles.reviewItem}>
-              <Text style={styles.reviewUser}>
-                {review.user} ({review.rating}★):
-              </Text>
-              <Text>{review.comment}</Text>
-            </View>
-          ))
-        )}
-
-        {/* Thêm đánh giá mới */}
-        <View style={styles.reviewSection}>
-          <Text style={styles.optionTitle}>Your Rating:</Text>
-          <View style={styles.ratingContainer}>
-            {[1, 2, 3, 4, 5].map((star) => (
-              <TouchableOpacity key={star} onPress={() => setRating(star)}>
-                <Text style={[styles.star, rating >= star && styles.selectedStar]}>★</Text>
-              </TouchableOpacity>
+          <View style={styles.reviewList}>
+            {reviews.map((review) => (
+              <View key={review.id} style={styles.reviewCard}>
+                <View style={styles.reviewHeader}>
+                  <Text style={styles.reviewUser}>{review.user}</Text>
+                  <View style={styles.ratingStars}>{renderStars(review.rating)}</View>
+                </View>
+                <Text style={styles.reviewComment}>{review.comment}</Text>
+                {review.imageUrl && <Image source={{ uri: review.imageUrl }} style={styles.reviewImage} />}
+              </View>
             ))}
           </View>
-
-          <TextInput
-            style={styles.reviewInput}
-            placeholder="Write a review..."
-            value={newReview}
-            onChangeText={setNewReview}
-          />
-          <TouchableOpacity onPress={addReview} style={styles.reviewButton}>
-            <Text style={styles.reviewButtonText}>Add Review</Text>
-          </TouchableOpacity>
+        )}
+        {/* Form thêm bình luận - Chỉ hiển thị khi đã đăng nhập */}
+        <View style={styles.addReviewSection}>
+          {currentUser ? (
+            <>
+              <Text style={styles.optionTitle}>Your Rating:</Text>
+              <View style={styles.ratingContainer}>
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <TouchableOpacity key={star} onPress={() => setRating(star)}>
+                    <Text style={[styles.star, rating >= star && styles.selectedStar]}>★</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+              <TextInput
+                style={styles.reviewInput}
+                placeholder="Write a review..."
+                value={newReview}
+                onChangeText={setNewReview}
+              />
+              <TouchableOpacity onPress={handleImageUpload} style={styles.uploadButton}>
+                <Text style={styles.uploadButtonText}>Upload Image</Text>
+              </TouchableOpacity>
+              {reviewImageUrl && <Image source={{ uri: reviewImageUrl }} style={styles.previewImage} />}
+              <TouchableOpacity onPress={addReview} style={styles.reviewButton}>
+                <Text style={styles.reviewButtonText}>Add Review</Text>
+              </TouchableOpacity>
+            </>
+          ) : (
+            <Text style={styles.loginPrompt}>Please log in to add a review.</Text>
+          )}
         </View>
       </View>
 
@@ -441,15 +564,20 @@ const styles = StyleSheet.create({
   addToCartButton: { backgroundColor: 'blue', padding: 10, alignItems: 'center' },
   addToCartText: { color: 'white', fontSize: 18 },
   // review
-  reviewText: { fontSize: 12, color: '#4A5568', marginLeft: 4 },
-  quantityButtonText: { fontSize: 18, fontWeight: 'bold' },
   reviewSection: { marginTop: 20, marginBottom: 20 },
   reviewTitle: { fontSize: 20, fontWeight: 'bold' },
   reviewItem: { borderBottomWidth: 1, paddingVertical: 8, marginBottom: 10 },
   reviewUser: { fontWeight: 'bold' },
   reviewInput: { borderWidth: 1, padding: 8, marginVertical: 10 },
-  reviewButton: { backgroundColor: 'green', padding: 10, alignItems: 'center' },
+  reviewButton: { backgroundColor: 'green', padding: 10, alignItems: 'center', marginTop: 10 },
   reviewButtonText: { color: 'white', fontSize: 18 },
+  uploadButton: { backgroundColor: '#007BFF', padding: 10, alignItems: 'center', marginVertical: 10 },
+  uploadButtonText: { color: 'white', fontSize: 16 },
+  reviewImage: { width: 100, height: 100, marginTop: 10, borderRadius: 5 },
+  previewImage: { width: 100, height: 100, marginVertical: 10, borderRadius: 5 },
+  reviewText: { fontSize: 12, color: '#4A5568', marginLeft: 4 },
+  quantityButtonText: { fontSize: 18, fontWeight: 'bold' },
+
   errorText: { fontSize: 18, color: 'red', textAlign: 'center', marginTop: 20 },
   ratingContainer: { flexDirection: 'row', marginVertical: 10 },
   star: { fontSize: 24, color: '#ccc' },
@@ -535,6 +663,51 @@ const styles = StyleSheet.create({
     marginTop: 10,
     padding: 10,
   },
+  noReviewsText: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    marginVertical: 10,
+  },
+  reviewList: {
+    marginTop: 8,
+  },
+  reviewCard: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3, // Hiệu ứng bóng cho Android
+    borderWidth: 1,
+    borderColor: '#eee',
+  },
+  reviewHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  ratingStars: {
+    flexDirection: 'row',
+  },
+  reviewComment: {
+    fontSize: 14,
+    color: '#555',
+    lineHeight: 20,
+  },
+  addReviewSection: {
+    marginTop: 20,
+    padding: 16,
+    backgroundColor: '#f9f9f9',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#ddd',
+  },
+  loginPrompt: { fontSize: 16, color: '#666', textAlign: 'center', marginVertical: 10 },
 });
 
 export default ProductDetail;

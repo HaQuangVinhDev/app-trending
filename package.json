@@ -32,6 +32,7 @@
     "@types/react-native": "^0.73.0",
     "axios": "^1.8.1",
     "class-variance-authority": "^0.7.1",
+    "cloudinary": "^2.5.1",
     "clsx": "^2.1.1",
     "expo": "^52.0.35",
     "expo-checkbox": "^4.0.1",

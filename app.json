@@ -6,6 +6,9 @@
     "orientation": "portrait",
     "icon": "./assets/images/Bshop.png",
     "scheme": "myapp",
+    "permissions": {
+      "cameraRoll": true
+    },
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {

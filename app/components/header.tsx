@@ -80,7 +80,7 @@ export default function Header() {
         </View>
         <View style={{ marginTop: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
           {/* Logo */}
-          <TouchableOpacity style={{ position: 'relative', marginBottom: 10 }} onPress={() => router.push('/runapp')}>
+          <TouchableOpacity style={{ position: 'relative', marginBottom: 10 }} onPress={() => router.push('/')}>
             <Image source={require('~/assets/images/logo.jpg')} style={styles.logo} />
           </TouchableOpacity>
 
@@ -168,7 +168,10 @@ export default function Header() {
                     <Text style={styles.menuintext}>🔥 Best Sellers</Text>
                   </TouchableOpacity>
 
-                  <TouchableOpacity style={[styles.menuItem, styles.highlightGreen]}>
+                  <TouchableOpacity
+                    onPress={() => router.push('/admin/dashboard')}
+                    style={[styles.menuItem, styles.highlightGreen]}
+                  >
                     <Text style={styles.menuintext}>🆕 New Arrivals</Text>
                   </TouchableOpacity>
 
