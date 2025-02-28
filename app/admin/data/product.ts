@@ -1,9 +1,7 @@
-import { ImageSourcePropType } from 'react-native';
-
 export interface Product {
   id: string;
   name: string;
-  image: ImageSourcePropType | string; // Định dạng đúng cho ảnh cục bộ
+  image: string;
   price: number;
   originalPrice: number;
   reviews: number;

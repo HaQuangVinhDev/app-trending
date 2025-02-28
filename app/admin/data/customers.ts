@@ -29,4 +29,10 @@ export const customers = [
     phone: '0978901234',
     totalOrders: 10,
   },
+  {
+    name: 'Hoàng Văn Trường ',
+    email: 'hoangvane@example.com',
+    phone: '0978901234',
+    totalOrders: 10,
+  },
 ];

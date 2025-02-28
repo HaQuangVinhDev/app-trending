@@ -27,7 +27,6 @@ export default function RootLayout() {
         if (adminStatus) {
           router.replace('/admin'); // Nếu là admin → chuyển đến admin
         } else {
-          router.replace('/'); // Nếu là user thường → chuyển về trang chính
         }
       } else {
         setIsAdmin(false);
@@ -46,7 +45,7 @@ export default function RootLayout() {
       if (router.canGoBack()) {
         router.back(); // Quay lại trang trước nếu có
       } else {
-        router.push('/'); // Nếu không có trang trước, quay về trang chủ
+        // router.push('/'); // Nếu không có trang trước, quay về trang chủ
       }
     }
   };
@@ -59,7 +58,7 @@ export default function RootLayout() {
           onSwipeRight={() => handleSwipe('SWIPE_RIGHT')}
           config={{
             velocityThreshold: 0.5,
-            directionalOffsetThreshold: screenWidth * 0.25, // Vuốt ít nhất 20% màn hình
+            directionalOffsetThreshold: screenWidth * 0.1,
           }}
           style={styles.gestureContainer}
         >

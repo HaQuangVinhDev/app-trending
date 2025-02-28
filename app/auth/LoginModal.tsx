@@ -43,14 +43,12 @@ export default function LoginModal({ visible, onClose, onSwitchToRegister, onLog
           <TouchableOpacity onPress={handleClose} style={{ position: 'absolute', padding: 10, top: 1, right: 1 }}>
             <X size={24} color="black" />
           </TouchableOpacity>
-          {/* Tiêu đề Login */}
+
           <Text style={{ fontSize: 20, marginBottom: 40, paddingTop: 30 }}>Sign In</Text>
-          {/* Form đăng nhập */}
-          {/* Email */}
+
           <Text style={styles.label}>Email</Text>
           <TextInput placeholder=" Enter Email" value={email} onChangeText={setEmail} style={styles.input} />
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            {/* Password */}
             <Text style={styles.label}>Password</Text>
             <TouchableOpacity onPress={() => setForgetPasswordVisible(true)}>
               <Text style={{ color: 'blue' }}>Forgot password?</Text>
@@ -69,9 +67,9 @@ export default function LoginModal({ visible, onClose, onSwitchToRegister, onLog
           >
             <Text style={{ color: 'white', textAlign: 'center' }}>Login</Text>
           </TouchableOpacity>
-          {/* text */}
+
           <Text style={{ fontSize: 16, margin: 20, textAlign: 'center', opacity: 0.5 }}>Or Register with</Text>
-          {/* Google */}
+
           <TouchableOpacity
             onPress={() => {}}
             style={{

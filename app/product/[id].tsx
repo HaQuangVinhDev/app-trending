@@ -21,9 +21,10 @@ import * as ImagePicker from 'expo-image-picker'; // Thêm import này
 import { db } from '~/firebaseConfig'; // Import Firestore
 import { collection, addDoc, getDocs, query, where } from 'firebase/firestore'; // Firestore functions
 import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
+
 // Hàm upload ảnh từ file đầu tiên
-const CLOUD_NAME = 'dwg8jrkdn'; // Thay bằng Cloud Name của bạn
-const UPLOAD_PRESET = 'expo_upload'; // Thay bằng Upload Preset của bạn
+const CLOUD_NAME = 'dwg8jrkdn';
+const UPLOAD_PRESET = 'expo_upload';
 
 async function pickAndUploadImage() {
   let result = await ImagePicker.launchImageLibraryAsync({
@@ -70,14 +71,14 @@ interface CartItem {
   color: string;
   size: string;
 }
-
+// Interface cho Review
 interface Review {
   id: string;
   productId: string;
   user: string;
   rating: number;
   comment: string;
-  imageUrl?: string; // Thêm trường để lưu URL ảnh
+  imageUrls?: string[]; // Thêm trường để lưu URL ảnh
 }
 
 const ProductDetail: FC = () => {
@@ -90,7 +91,7 @@ const ProductDetail: FC = () => {
   const [selectedSize, setSelectedSize] = useState(
     typeof product?.sizes?.[0] === 'object' ? product.sizes[0].name : '',
   );
-
+  const [reviewImageUrls, setReviewImageUrls] = useState<string[]>([]); // Lưu nhiều URL ảnh
   const [reviews, setReviews] = useState<Review[]>([]);
   const [newReview, setNewReview] = useState('');
   const [rating, setRating] = useState(5);
@@ -196,7 +197,42 @@ const ProductDetail: FC = () => {
 
     loadReviews();
   }, [id]);
+  // Chọn nhiều ảnh từ thư viện
+  const pickImages = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsMultipleSelection: true, // Cho phép chọn nhiều ảnh
+      quality: 1,
+    });
 
+    if (!result.canceled) {
+      const uris = result.assets.map((asset) => asset.uri);
+      const uploadedUrls = await Promise.all(uris.map((uri) => uploadImage(uri)));
+      const validUrls = uploadedUrls.filter((url) => url !== null) as string[];
+      setReviewImageUrls((prev) => [...prev, ...validUrls]);
+      ToastAndroid.show('Images uploaded successfully!', ToastAndroid.SHORT);
+    }
+  };
+
+  // Chụp ảnh bằng camera
+  const takePhoto = async () => {
+    let result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      const uri = result.assets[0].uri;
+      const uploadedUrl = await uploadImage(uri);
+      if (uploadedUrl) {
+        setReviewImageUrls((prev) => [...prev, uploadedUrl]);
+        ToastAndroid.show('Photo uploaded successfully!', ToastAndroid.SHORT);
+      } else {
+        Alert.alert('Error', 'Failed to upload photo.');
+      }
+    }
+  };
   // Hàm xử lý upload ảnh
   const handleImageUpload = async () => {
     const imageUrl = await pickAndUploadImage();
@@ -206,6 +242,11 @@ const ProductDetail: FC = () => {
     } else {
       Alert.alert('Error', 'Failed to upload image.');
     }
+  };
+
+  // Xóa ảnh khỏi danh sách preview
+  const removeImage = (index: number) => {
+    setReviewImageUrls((prev) => prev.filter((_, i) => i !== index));
   };
 
   // Thêm bình luận mới
@@ -225,7 +266,7 @@ const ProductDetail: FC = () => {
       user: currentUser.email || 'Anonymous', // Lấy email từ Firebase Auth
       rating,
       comment: newReview,
-      imageUrl: reviewImageUrl || undefined,
+      imageUrls: reviewImageUrls.length > 0 ? reviewImageUrls : undefined,
     };
     try {
       // 1. Lưu vào AsyncStorage
@@ -252,7 +293,7 @@ const ProductDetail: FC = () => {
       // Reset form
       setNewReview('');
       setRating(5);
-      setReviewImageUrl(null);
+      setReviewImageUrls([]);
       ToastAndroid.show('Review added successfully!', ToastAndroid.SHORT);
     } catch (error) {
       console.error('Error adding review:', error);
@@ -471,12 +512,18 @@ const ProductDetail: FC = () => {
                   <View style={styles.ratingStars}>{renderStars(review.rating)}</View>
                 </View>
                 <Text style={styles.reviewComment}>{review.comment}</Text>
-                {review.imageUrl && <Image source={{ uri: review.imageUrl }} style={styles.reviewImage} />}
+                {review.imageUrls && (
+                  <ScrollView horizontal style={styles.imageScroll}>
+                    {review.imageUrls.map((url, index) => (
+                      <Image key={index} source={{ uri: url }} style={styles.reviewImage} />
+                    ))}
+                  </ScrollView>
+                )}
               </View>
             ))}
           </View>
         )}
-        {/* Form thêm bình luận - Chỉ hiển thị khi đã đăng nhập */}
+        {/* Form thêm bình luận */}
         <View style={styles.addReviewSection}>
           {currentUser ? (
             <>
@@ -494,10 +541,26 @@ const ProductDetail: FC = () => {
                 value={newReview}
                 onChangeText={setNewReview}
               />
-              <TouchableOpacity onPress={handleImageUpload} style={styles.uploadButton}>
-                <Text style={styles.uploadButtonText}>Upload Image</Text>
-              </TouchableOpacity>
-              {reviewImageUrl && <Image source={{ uri: reviewImageUrl }} style={styles.previewImage} />}
+              <View style={styles.imageButtons}>
+                <TouchableOpacity onPress={pickImages} style={styles.uploadButton}>
+                  <Text style={styles.uploadButtonText}>Pick Images</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={takePhoto} style={styles.uploadButton}>
+                  <Text style={styles.uploadButtonText}>Take Photo</Text>
+                </TouchableOpacity>
+              </View>
+              {reviewImageUrls.length > 0 && (
+                <ScrollView horizontal style={styles.imagePreviewScroll}>
+                  {reviewImageUrls.map((url, index) => (
+                    <View key={index} style={styles.imagePreviewContainer}>
+                      <Image source={{ uri: url }} style={styles.previewImage} />
+                      <TouchableOpacity style={styles.deleteButton} onPress={() => removeImage(index)}>
+                        <Text style={styles.deleteButtonText}>X</Text>
+                      </TouchableOpacity>
+                    </View>
+                  ))}
+                </ScrollView>
+              )}
               <TouchableOpacity onPress={addReview} style={styles.reviewButton}>
                 <Text style={styles.reviewButtonText}>Add Review</Text>
               </TouchableOpacity>
@@ -564,16 +627,40 @@ const styles = StyleSheet.create({
   addToCartButton: { backgroundColor: 'blue', padding: 10, alignItems: 'center' },
   addToCartText: { color: 'white', fontSize: 18 },
   // review
-  reviewSection: { marginTop: 20, marginBottom: 20 },
-  reviewTitle: { fontSize: 20, fontWeight: 'bold' },
+  reviewSection: {
+    marginVertical: 10, // Giảm khoảng cách trên dưới
+    paddingHorizontal: 0, // Loại bỏ padding ngang thừa
+  },
+  reviewTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 8, // Giảm khoảng cách dưới tiêu đề
+    color: '#333',
+  },
+  noReviewsText: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    marginVertical: 8, // Giảm khoảng cách khi không có bình luận
+  },
   reviewItem: { borderBottomWidth: 1, paddingVertical: 8, marginBottom: 10 },
   reviewUser: { fontWeight: 'bold' },
-  reviewInput: { borderWidth: 1, padding: 8, marginVertical: 10 },
+  reviewInput: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    padding: 10,
+    fontSize: 14,
+    backgroundColor: '#fff',
+    marginBottom: 8, // Giảm khoảng cách dưới input
+    minHeight: 90,
+    textAlignVertical: 'top',
+  },
   reviewButton: { backgroundColor: 'green', padding: 10, alignItems: 'center', marginTop: 10 },
   reviewButtonText: { color: 'white', fontSize: 18 },
   uploadButton: { backgroundColor: '#007BFF', padding: 10, alignItems: 'center', marginVertical: 10 },
   uploadButtonText: { color: 'white', fontSize: 16 },
-  reviewImage: { width: 100, height: 100, marginTop: 10, borderRadius: 5 },
+  reviewImage: { width: 100, height: 100, marginTop: 10, borderRadius: 6 },
   previewImage: { width: 100, height: 100, marginVertical: 10, borderRadius: 5 },
   reviewText: { fontSize: 12, color: '#4A5568', marginLeft: 4 },
   quantityButtonText: { fontSize: 18, fontWeight: 'bold' },
@@ -663,25 +750,20 @@ const styles = StyleSheet.create({
     marginTop: 10,
     padding: 10,
   },
-  noReviewsText: {
-    fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
-    marginVertical: 10,
-  },
+
   reviewList: {
-    marginTop: 8,
+    marginTop: 0,
   },
   reviewCard: {
     backgroundColor: '#fff',
     borderRadius: 12,
     padding: 12,
-    marginBottom: 12,
+    marginBottom: 8, // Giảm khoảng cách dưới mỗi card
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 3, // Hiệu ứng bóng cho Android
+    elevation: 3,
     borderWidth: 1,
     borderColor: '#eee',
   },
@@ -698,16 +780,36 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#555',
     lineHeight: 20,
+    marginBottom: 6, // Giảm khoảng cách dưới nội dung
   },
   addReviewSection: {
-    marginTop: 20,
-    padding: 16,
+    marginTop: 10,
+    padding: 12,
     backgroundColor: '#f9f9f9',
     borderRadius: 12,
     borderWidth: 1,
     borderColor: '#ddd',
   },
   loginPrompt: { fontSize: 16, color: '#666', textAlign: 'center', marginVertical: 10 },
+  imageScroll: {
+    marginTop: 0, // Loại bỏ khoảng cách trên ảnh
+  },
+
+  imageButtons: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 },
+  imagePreviewContainer: { position: 'relative', marginRight: 8 },
+  deleteButton: {
+    position: 'absolute',
+    top: 4,
+    right: 4,
+    backgroundColor: 'rgba(255, 0, 0, 0.8)',
+    borderRadius: 12,
+    width: 24,
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  deleteButtonText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
+  imagePreviewScroll: { marginBottom: 12 },
 });
 
 export default ProductDetail;

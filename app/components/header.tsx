@@ -42,7 +42,6 @@ export default function Header() {
     }
   };
 
-  // Danh sách gợi ý cố định (có thể thay bằng API)
   const searchData = ['Valentine Gift', 'Couples Gift', 'Gift for Her', 'Birthday Gift', 'Anniversary Gift'];
 
   // Xử lý tìm kiếm

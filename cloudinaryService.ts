@@ -1,11 +1,18 @@
+// uploadImage.ts
 import * as ImagePicker from 'expo-image-picker';
 
-const CLOUD_NAME = 'dwg8jrkdn'; // 🔹 Thay bằng Cloud Name của bạn
-const UPLOAD_PRESET = 'expo_upload'; // 🔹 Thay bằng Upload Preset bạn đã tạo
+const CLOUD_NAME = 'dwg8jrkdn'; // Thay bằng Cloud Name của bạn
+const UPLOAD_PRESET = 'expo_upload'; // Thay bằng Upload Preset của bạn
 
-export async function pickAndUploadImage() {
-  let result = await ImagePicker.launchImageLibraryAsync({
-    mediaTypes: ImagePicker.MediaTypeOptions.Images, // ✅ Thay đổi cú pháp mới
+export async function pickAndUploadImage(): Promise<string | null> {
+  const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+  if (!permissionResult.granted) {
+    alert('Permission to access gallery is required!');
+    return null;
+  }
+
+  const result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.Images,
     allowsEditing: true,
     quality: 1,
   });
@@ -17,8 +24,8 @@ export async function pickAndUploadImage() {
   return null;
 }
 
-export async function uploadImage(imageUri: string) {
-  let formData = new FormData();
+export async function uploadImage(imageUri: string): Promise<string | null> {
+  const formData = new FormData();
   formData.append('file', {
     uri: imageUri,
     type: 'image/jpeg',
@@ -27,15 +34,16 @@ export async function uploadImage(imageUri: string) {
   formData.append('upload_preset', UPLOAD_PRESET);
 
   try {
-    let response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+    const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
       method: 'POST',
       body: formData,
     });
 
-    let data = await response.json();
-    return data.secure_url; // 🔹 URL ảnh sau khi upload thành công
+    if (!response.ok) throw new Error('Upload failed');
+    const data = await response.json();
+    return data.secure_url; // Trả về URL ảnh
   } catch (error) {
-    console.error('Upload failed', error);
+    console.error('Upload failed:', error);
     return null;
   }
 }
